@@ -1,6 +1,5 @@
 # Libraries
 
-
 function map_to_matrix(filename)
     open("./Data/$filename") do f
         # Case if the text file isn't a map
