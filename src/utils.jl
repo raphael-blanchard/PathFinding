@@ -32,6 +32,25 @@ function map_to_matrix(filename)
     end
 end
 
+struct Vertex
+    top::Int64
+    left::Int64
+    right::Int64
+    bottom::Int64
+end
+
+function map_to_vertices(charMat::Matrix{Char})
+    vertices::Matrix{Vertex} = [Vertex(typemax(Int64), typemax(Int64), typemax(Int64), typemax(Int64)) for i in 1:size(charMat,1), j in 1:size(charMat,2)]
+    for i in 1:size(charMat, 1)
+        for j in 1:size(charMat, 2)
+            # if (i==1) && (j==1 || j==size(charMat,2)) 
+            vertices[i, j] = get_vertex(i, j, charMat)
+        end
+    end
+
+end
+
+
 function char_to_val_test(char::Char)
     if char == '.' || char == 'G' return 1
     elseif char == '@' || char == 'O' return 0
@@ -116,8 +135,12 @@ function main()
     # .@TTTT
     # .@....
 
-    test_graph::Matrix{Int64} = char_to_val_test.(map_to_matrix("own.map"))
-    @show test_graph
+    vertices::Matrix{Vertex} = [Vertex(typemax(Int64), typemax(Int64), typemax(Int64), typemax(Int64)) for i in 1:size(graph1,1), j in 1:size(graph1,2)]
+    @show vertices
+    # test_graph::Matrix{Char} = map_to_matrix("own.map")
+    # @show test_graph
     # println(graph2)
-    dijkstra(test_graph, 1, 6)
+    # dijkstra(test_graph, 1, 6)
+
+    # test::Vertex = Vertex(1, 2, 3, 4)
 end
