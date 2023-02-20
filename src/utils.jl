@@ -1,5 +1,40 @@
 # Libraries
 
+# Associated costs of a movement
+# E.g: '.' -> 'T' costs 3, and we would access this value by doing costs['.']['T']
+costs::Dict{Char, Dict{Char, Int64}} = Dict(
+    '.' => Dict(
+        '.' => 1,
+        '@' => 0,
+        'T' => 3,
+        'S' => 3,
+        'W' => 3),
+    '@' => Dict(
+        '.' => 0,
+        '@' => 0,
+        'T' => 0,
+        'S' => 0,
+        'W' => 0),
+    'T' => Dict(
+        '.' => 3,
+        '@' => 0,
+        'T' => 5,
+        'S' => 5,
+        'W' => 5),
+    'S' => Dict(
+        '.' => 3,
+        '@' => 0,
+        'T' => 5,
+        'S' => 5,
+        'W' => 5),
+    'W' => Dict(
+        '.' => 3,
+        '@' => 0,
+        'T' => 5,
+        'S' => 5,
+        'W' => 5)
+)
+
 function map_to_matrix(filename)
     open("../Data/$filename") do f
         # Case if the text file isn't a map
@@ -39,27 +74,54 @@ struct Vertex
     bottom::Int64
 end
 
+# Creates a Vertex from a point (i, j) in the matrix charMat
+function transform_vertex(i::Int64, j::Int64, charMat::Matrix{Char})
+    # Top border case
+    if (i==1)
+        # Top left edge
+        if (j==1) 
+            return Vertex(0, 0, costs[charMat[i, j]][charMat[i, j+1]], costs[charMat[i, j]][charMat[i+1, j]])
+        # Top right edge
+        elseif j==size(charMat,2)
+            return Vertex(0, costs[charMat[i, j]][charMat[i, j-1]], 0, costs[charMat[i, j]][charMat[i+1, j]])
+        # Rest of the top border
+        else
+            return Vertex(0, costs[charMat[i, j]][charMat[i, j-1]], costs[charMat[i, j]][charMat[i, j+1]], costs[charMat[i, j]][charMat[i+1, j]])
+        end
+    # Bottom border case
+    elseif (i==size(charMat,1))
+        # Bottom left edge
+        if (j==1) 
+            return Vertex(costs[charMat[i, j]][charMat[i-1, j]], 0, costs[charMat[i, j]][charMat[i, j+1]], 0)
+        # Bottom right edge
+        elseif j==size(charMat,2)
+            return Vertex(costs[charMat[i, j]][charMat[i-1, j]], costs[charMat[i, j]][charMat[i, j-1]], 0, 0)
+        # Rest of the bottom border
+        else
+            return Vertex(costs[charMat[i, j]][charMat[i-1, j]], costs[charMat[i, j]][charMat[i, j-1]], costs[charMat[i, j]][charMat[i, j+1]], 0)
+        end
+    # Left border except top and bottom left edges (treated before)
+    elseif (j==1)
+        return Vertex(costs[charMat[i, j]][charMat[i-1, j]], 0, costs[charMat[i, j]][charMat[i, j+1]], costs[charMat[i, j]][charMat[i+1, j]])
+    # Right border except top and bottom right edges (treated before)
+    elseif (j==size(charMat,2))
+        return Vertex(costs[charMat[i, j]][charMat[i-1, j]], costs[charMat[i, j]][charMat[i, j-1]], 0, costs[charMat[i, j]][charMat[i+1, j]])
+    # Other cases
+    else
+        return Vertex(costs[charMat[i, j]][charMat[i-1, j]], costs[charMat[i, j]][charMat[i, j-1]], costs[charMat[i, j]][charMat[i, j+1]], costs[charMat[i, j]][charMat[i+1, j]])
+    end
+end
+
+# Transforming a map to a matrix of Vertices
 function map_to_vertices(charMat::Matrix{Char})
-    vertices::Matrix{Vertex} = [Vertex(typemax(Int64), typemax(Int64), typemax(Int64), typemax(Int64)) for i in 1:size(charMat,1), j in 1:size(charMat,2)]
+    vertices = Matrix{Vertex}(undef, size(charMat, 1), size(charMat, 2))
     for i in 1:size(charMat, 1)
         for j in 1:size(charMat, 2)
-            # if (i==1) && (j==1 || j==size(charMat,2)) 
-            vertices[i, j] = get_vertex(i, j, charMat)
+            vertices[i, j] = transform_vertex(i, j, charMat)
         end
     end
-
+    return vertices
 end
-
-
-function char_to_val_test(char::Char)
-    if char == '.' || char == 'G' return 1
-    elseif char == '@' || char == 'O' return 0
-    elseif char == 'T' return 3
-    elseif char == 'S' return 5
-    else return 5
-    end
-end
-
 
 # returns index of vertex not yet explored and with the smallest distance cost
 function min_dist(dist::Vector{Int64}, uncovered_nodes::Vector{Bool})
@@ -135,9 +197,14 @@ function main()
     # .@TTTT
     # .@....
 
-    vertices::Matrix{Vertex} = [Vertex(typemax(Int64), typemax(Int64), typemax(Int64), typemax(Int64)) for i in 1:size(graph1,1), j in 1:size(graph1,2)]
-    @show vertices
-    # test_graph::Matrix{Char} = map_to_matrix("own.map")
+    test_graph::Matrix{Char} = map_to_matrix("Berlin_0_256.map")
+
+    test_vert::Matrix{Vertex} = map_to_vertices(test_graph)
+
+    @show test_graph
+
+    @show (test_vert)
+
     # @show test_graph
     # println(graph2)
     # dijkstra(test_graph, 1, 6)
