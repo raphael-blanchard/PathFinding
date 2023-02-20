@@ -108,8 +108,16 @@ function main()
         0 0 0 0 0 0
     ]
 
-    graph2::Matrix{Int64} = char_to_val_test.(map_to_matrix("arena.map"))
-    # @show graph2
+    # Test map, start = [1, 1] / finish = [6, 3]
+    # ......
+    # @.....
+    # @@....
+    # .@....
+    # .@TTTT
+    # .@....
+
+    test_graph::Matrix{Int64} = char_to_val_test.(map_to_matrix("own.map"))
+    @show test_graph
     # println(graph2)
-    dijkstra(graph1, 1, 6)
+    dijkstra(test_graph, 1, 6)
 end
