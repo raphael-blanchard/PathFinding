@@ -180,14 +180,25 @@ end
 # Testing
 function main()
 
-    graph1::Matrix{Int64} = [
-        0 2 4 0 0 0;
-        0 0 1 7 0 0;
-        0 0 0 0 3 0;
-        0 0 0 0 0 1;
-        0 0 0 2 0 5;
-        0 0 0 0 0 0
+    test1::Matrix{Int64} = [
+        0 2 4 0;
+        1 0 1 7;
+        0 0 0 4;
+        0 0 1 0;
     ]
+
+    # .T@
+    # @.@
+    # TT.
+    # SHortest path is [1,1] -> [1,2] -> [2,2] -> [3,2] -> [3,3]
+    # Cost of 12
+
+    test1_vert = [
+        Vertex(0, 0, 3, 0) Vertex(0, 3, 0, 3) Vertex(0, 0, 0, 0);
+        Vertex(0, 0, 0, 0) Vertex(3, 0, 0, 3) Vertex(0, 0, 0, 0);
+        Vertex(0, 0, 5, 0) Vertex(3, 5, 3, 0) Vertex(0, 3, 0, 0)
+    ]
+
 
     # Test map, start = [1, 1] / finish = [6, 3]
     # ......
@@ -197,17 +208,17 @@ function main()
     # .@TTTT
     # .@....
 
-    test_graph::Matrix{Char} = map_to_matrix("Berlin_0_256.map")
+    # test_graph::Matrix{Char} = map_to_matrix("Berlin_0_256.map")
 
-    test_vert::Matrix{Vertex} = map_to_vertices(test_graph)
+    # test_vert::Matrix{Vertex} = map_to_vertices(test_graph)
 
-    @show test_graph
+    # @show test_graph
 
-    @show (test_vert)
+    # @show (test_vert)
 
     # @show test_graph
     # println(graph2)
-    # dijkstra(test_graph, 1, 6)
+    dijkstra(test1, 1, 4)
 
     # test::Vertex = Vertex(1, 2, 3, 4)
 end
