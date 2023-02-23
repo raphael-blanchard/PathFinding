@@ -123,121 +123,87 @@ function map_to_vertices(charMat::Matrix{Char})
     return vertices
 end
 
-# returns index of vertex not yet explored and with the smallest distance cost
-function min_dist(dist::Vector{Int64}, uncovered_nodes::Vector{Bool})
-    
+function min_dist_vert(distances::Matrix{Int64}, uncovered_nodes::Matrix{Bool})
     min_dist::Int64 = typemax(Int64)
-    min_index::Int64 = 0
-
-    for i in 1:length(dist)
-        if dist[i] < min_dist && uncovered_nodes[i] == false
-            min_dist = dist[i]
-            min_index = i
-        end
-    end
-    return min_index
-end
-
-function dijkstra(graph::Matrix{Int64}, start::Int64, finish::Int64)
-    # Keeps track of which node has been covered or not
-    uncovered_nodes::Vector{Bool} = [false for i in 1:size(graph, 1)]
-    # Keeps track of the distance from the starting point to the i-th vertex
-    dist::Vector{Int64} = [typemax(Int64) for i in 1:size(graph,1)]
-    dist[start] = 0
-    # println(uncovered_nodes)
-
-    # keep track of the shortest path to the end vertex
-    # path_to_end::Vector{Int64} = [1]
-    # path_count = 1
-
-    for i in 1:length(dist)
-        closest_vertex = min_dist(dist, uncovered_nodes)
-
-        # Iterating through all vertices to update the distances to get from the starting vertex to the others
-        for j in 1:length(dist)
-            # 3 conditions to check
-            # - if there is a path between the 2 vertices we're checking
-            # - if the vertex we're looking at has been already visited(if yes it'd mean we already have the shortest path)
-            # - 
-            if graph[closest_vertex, j] > 0 && uncovered_nodes[j] == false && dist[j] > dist[closest_vertex] + graph[closest_vertex, j]
-                dist[j] = dist[closest_vertex] + graph[closest_vertex, j]
-                # if j == finish
-                #     push!(path_to_end, closest_vertex)
-                # end
+    min_x, min_y = 0, 0
+    for i in 1:size(distances, 1)
+        for j in 1:size(distances, 2)
+            if distances[i, j] < min_dist && uncovered_nodes[i, j] == false
+                min_dist = distances[i, j]
+                min_x, min_y = i, j
             end
         end
-        # Since we visited the vertex at the index closest_vertex
-        uncovered_nodes[closest_vertex] = true
     end
-    # for (i, j) in enumerate(dist)
-    #     println("Distance from vertex ",start, " to vertex ", i, ": ", j)
-    # end
-    println("Distance from vertex ",start, " to vertex ", finish, ": ", dist[finish])
-    # println(path_to_end)
-
+    return min_x, min_y
 end
 
-function dijkstra_pixels(graph::Matrix{Vertex}, start_x::Int64, start_y::Int64, finish_x::Int64, finish_y::Int64)
+# Function that updates the distance values of the neighbouring node at index (i, j)
+function update_distances(distances::Matrix{Int64}, uncovered_nodes::Matrix{Bool}, graph::Matrix{Vertex}, i::Int64, j::Int64)
+    # top neighbour
+    if graph[i, j].top > 0 && uncovered_nodes[i-1, j] == false && distances[i-1, j] > distances[i, j] + graph[i, j].top
+        distances[i-1, j] = distances[i, j] + graph[i, j].top
+    end
+    # left neighbour
+    if graph[i, j].left > 0 && uncovered_nodes[i, j-1] == false && distances[i, j-1] > distances[i, j] + graph[i, j].left
+        distances[i, j-1] = distances[i, j] + graph[i, j].left
+    end
+    # right neighbour
+    if graph[i, j].right > 0 && uncovered_nodes[i, j+1] == false && distances[i, j+1] > distances[i, j] + graph[i, j].right
+        distances[i, j+1] = distances[i, j] + graph[i, j].right
+    end
+    # bottom neighbour
+    if graph[i, j].bottom > 0 && uncovered_nodes[i+1, j] == false && distances[i+1, j] > distances[i, j] + graph[i, j].bottom
+        distances[i+1, j] = distances[i, j] + graph[i, j].bottom
+    end
+    return distances
+end
+
+function updated_dijkstra(graph::Matrix{Vertex}, start_x::Int64, start_y::Int64, finish_x::Int64, finish_y::Int64)
     # None of the nodes have been visited at the beginning
     uncovered_nodes::Matrix{Bool} = [false for i in 1:size(graph,1), j in 1:size(graph,2)]
     # Infinite distance between the start and other nodes for now
     distances::Matrix{Int64} = [typemax(Int64) for i in 1:size(graph,1), j in 1:size(graph,2)]
     distances[start_x, start_y] = 0
 
-    # Iterate through lines
-    for i in 1:size(graph, 1)
-        # Iterate through columns
-        for j in 1:size(graph, 2)
-        # get the index of the unvisited and closest node to the start node
-        # Readapt for 
-        min_x, min_y = min_dist(distances, uncovered_nodes)
-            if graph[min_x, min_y].top > 0 &&
-        end
+    # arbitrary value
+    min_x, min_y = 1, 1
+    # Until the path to the finish hasn't been found or if there are no more visitable nodes, we iterate
+    while uncovered_nodes[finish_x, finish_y] == false || (min_x==0 && min_y==0)
+        # Getting the index of the unvisited and closest node to the starting point
+        min_x, min_y = min_dist_vert(distances, uncovered_nodes)
+
+        # Update the distances of the pixels around the pixel at index (min_x, min_y) 
+        distances = update_distances(distances, uncovered_nodes, graph, min_x, min_y)
+        # marking the node we just worked around as visited
+        uncovered_nodes[min_x, min_y] = true
     end
+
+    println("Distance from vertex (",start_x, ", ", start_y, ") to vertex (", finish_x, ", ", finish_y, "): ", distances[finish_x, finish_y])
 end
 
 # Testing
 function main()
-
-    test1::Matrix{Int64} = [
-        0 2 4 0;
-        1 0 1 7;
-        0 0 0 4;
-        0 0 1 0;
-    ]
-
     # .T@
     # @.@
     # TT.
     # SHortest path is [1,1] -> [1,2] -> [2,2] -> [3,2] -> [3,3]
     # Cost of 12
 
-    test_vert::Matrix{Vertex} = [
+    test_graph::Matrix{Vertex} = [
         Vertex(0, 0, 3, 0) Vertex(0, 3, 0, 3) Vertex(0, 0, 0, 0);
         Vertex(0, 0, 0, 0) Vertex(3, 0, 0, 3) Vertex(0, 0, 0, 0);
         Vertex(0, 0, 5, 0) Vertex(3, 5, 3, 0) Vertex(0, 3, 0, 0)
     ]
+    # Find the shortest path to go from top left (1,1) pixel to bottom right pixel (3,3)
+    updated_dijkstra(test_graph, 1, 1, 3, 3)
 
 
-    # Test map, start = [1, 1] / finish = [6, 3]
-    # ......
-    # @.....
-    # @@....
-    # .@....
-    # .@TTTT
-    # .@....
+    # Test using an actual .map file
+    # Transform the .map file into a matrix of Char
+    mapChar::Matrix{Char} = map_to_matrix("arena.map")
+    # Transform a Char matrix into a matrix of vertices, corresponding to the graph of the map
+    mapVertices::Matrix{Vertex} = map_to_vertices(mapChar)
 
-    # test_graph::Matrix{Char} = map_to_matrix("Berlin_0_256.map")
+    updated_dijkstra(mapVertices, 1, 1, 49, 49)
 
-    # test_vert::Matrix{Vertex} = map_to_vertices(test_graph)
-
-    # @show test_graph
-
-    # @show (test_vert)
-
-    # @show test_graph
-    # println(graph2)
-    dijkstra(test1, 1, 4)
-
-    # test::Vertex = Vertex(1, 2, 3, 4)
 end
