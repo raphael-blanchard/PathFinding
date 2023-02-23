@@ -177,6 +177,25 @@ function dijkstra(graph::Matrix{Int64}, start::Int64, finish::Int64)
 
 end
 
+function dijkstra_pixels(graph::Matrix{Vertex}, start_x::Int64, start_y::Int64, finish_x::Int64, finish_y::Int64)
+    # None of the nodes have been visited at the beginning
+    uncovered_nodes::Matrix{Bool} = [false for i in 1:size(graph,1), j in 1:size(graph,2)]
+    # Infinite distance between the start and other nodes for now
+    distances::Matrix{Int64} = [typemax(Int64) for i in 1:size(graph,1), j in 1:size(graph,2)]
+    distances[start_x, start_y] = 0
+
+    # Iterate through lines
+    for i in 1:size(graph, 1)
+        # Iterate through columns
+        for j in 1:size(graph, 2)
+        # get the index of the unvisited and closest node to the start node
+        # Readapt for 
+        min_x, min_y = min_dist(distances, uncovered_nodes)
+            if graph[min_x, min_y].top > 0 &&
+        end
+    end
+end
+
 # Testing
 function main()
 
@@ -193,7 +212,7 @@ function main()
     # SHortest path is [1,1] -> [1,2] -> [2,2] -> [3,2] -> [3,3]
     # Cost of 12
 
-    test1_vert = [
+    test_vert::Matrix{Vertex} = [
         Vertex(0, 0, 3, 0) Vertex(0, 3, 0, 3) Vertex(0, 0, 0, 0);
         Vertex(0, 0, 0, 0) Vertex(3, 0, 0, 3) Vertex(0, 0, 0, 0);
         Vertex(0, 0, 5, 0) Vertex(3, 5, 3, 0) Vertex(0, 3, 0, 0)
