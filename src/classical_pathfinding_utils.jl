@@ -1,3 +1,5 @@
+# Implementation of pathfinding algorithms for classical approaches
+
 # returns index of vertex not yet explored and with the smallest distance cost
 function min_dist(dist::Vector{Int64}, uncovered_nodes::Vector{Bool})
     
