@@ -63,9 +63,9 @@ function draw_path(imgMat::Array{Float64, 3}, path::Vector{Coordinate}, start_x:
     end
 end
 
-test = map_to_matrix("divideandconquer.map")
+test = map_to_matrix("brc201d.map")
 img_test = map_to_img(test)
 path = main()
 draw_path(img_test, path, 1,1,1,1)
 
-save("divideandconquer.png", colorview(RGB, img_test))
+save("brc201d.png", colorview(RGB, img_test))

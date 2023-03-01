@@ -1,1 +1,4 @@
 /* File to check RGB colors for the map */
+main {
+    color: rgb(255, 255, 255);
+    }
