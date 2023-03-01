@@ -62,15 +62,17 @@ function draw_path(imgMat::Array{Float64, 3}, path::Vector{Coordinate}, start_x:
     end
 end
 
-start_x::Int64, start_y::Int64, finish_x::Int64, finish_y::Int64 = 50, 319, 395, 81
-# Transform the .map file into a matrix of Char
-mapChar::Matrix{Char} = map_to_matrix("AR0071SR.map")
-# Transform a Char matrix into a matrix of vertices, corresponding to the graph of the map
-mapVertices::Matrix{Vertex} = map_to_vertices(mapChar)
-parents = updated_dijkstra(mapVertices, start_x, start_y, finish_x, finish_y)
-path = path_creation(parents, start_x, start_y, finish_x, finish_y)
+function main()
+    start_x::Int64, start_y::Int64, finish_x::Int64, finish_y::Int64 = 49, 64, 450, 450
+    # Transform the .map file into a matrix of Char
+    mapChar::Matrix{Char} = map_to_matrix("divideandconquer.map")
+    # Transform a Char matrix into a matrix of vertices, corresponding to the graph of the map
+    mapVertices::Matrix{Vertex} = map_to_vertices(mapChar)
+    parents = updated_dijkstra(mapVertices, start_x, start_y, finish_x, finish_y)
+    path = path_creation(parents, start_x, start_y, finish_x, finish_y)
 
-img_test = map_to_img(mapChar)
-draw_path(img_test, path, 1,1,1,1)
+    img_test = map_to_img(mapChar)
+    draw_path(img_test, path, 1,1,1,1)
 
-save("Results/AR0071SR.png", colorview(RGB, img_test))
+    save("Results/divideandconquer.png", colorview(RGB, img_test))
+end
