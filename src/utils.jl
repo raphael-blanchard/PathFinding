@@ -74,7 +74,7 @@ struct Vertex
     bottom::Int64
 end
 
-struct Coord
+mutable struct Coordinate
     x::Int64
     y::Int64
 end
@@ -142,37 +142,42 @@ function min_dist_vert(distances::Matrix{Int64}, uncovered_nodes::Matrix{Bool})
 end
 
 # Function that updates the distance values of the neighbouring node at index (i, j)
-function update_distances(distances::Matrix{Int64}, uncovered_nodes::Matrix{Bool}, graph::Matrix{Vertex}, i::Int64, j::Int64, parents::Matrix{Coord})
+function update_distances(distances::Matrix{Int64}, uncovered_nodes::Matrix{Bool}, graph::Matrix{Vertex}, i::Int64, j::Int64, parents::Matrix{Coordinate})
     # top neighbour
     if graph[i, j].top > 0 && uncovered_nodes[i-1, j] == false && distances[i-1, j] > distances[i, j] + graph[i, j].top
-        parents[i-1, j] = Coord(i, j)
+        parents[i-1, j] = Coordinate(i, j)
         # shortest_paths[i-1, j] = [shortest_paths[i,j]; (i-1, j)]
         distances[i-1, j] = distances[i, j] + graph[i, j].top
     end
     # left neighbour
     if graph[i, j].left > 0 && uncovered_nodes[i, j-1] == false && distances[i, j-1] > distances[i, j] + graph[i, j].left
-        parents[i, j-1] = Coord(i, j)
+        parents[i, j-1] = Coordinate(i, j)
         # shortest_paths[i, j-1] = [shortest_paths[i,j]; (i-1, j)]
         distances[i, j-1] = distances[i, j] + graph[i, j].left
     end
     # right neighbour
     if graph[i, j].right > 0 && uncovered_nodes[i, j+1] == false && distances[i, j+1] > distances[i, j] + graph[i, j].right
-        parents[i, j+1] = Coord(i, j)
+        parents[i, j+1] = Coordinate(i, j)
         # shortest_paths[i, j+1] = [shortest_paths[i,j]; (i, j+1)]
         distances[i, j+1] = distances[i, j] + graph[i, j].right
     end
     # bottom neighbour
     if graph[i, j].bottom > 0 && uncovered_nodes[i+1, j] == false && distances[i+1, j] > distances[i, j] + graph[i, j].bottom
-        parents[i+1, j] = Coord(i, j)
+        parents[i+1, j] = Coordinate(i, j)
         # shortest_paths[i+1, j] = [shortest_paths[i,j]; (i+1, j)]
         distances[i+1, j] = distances[i, j] + graph[i, j].bottom
     end
     return distances, parents
 end
 
-function print_parents(parents::Matrix{Coord}, curr_x, curr_y)
-    print_parents(parents, parents[curr_x, curr_y].x, parents[curr_x, curr_y].y)
-    println(curr_x, curr_y)
+function print_parents(parents::Matrix{Coordinate}, curr_x, curr_y)
+    if (curr_x <= size(parents, 1) && curr_x >= 1 && curr_y <= size(parents,2) && curr_y>= 1)
+        currCoord = parents[curr_x, curr_y]
+        if currCoord != Coordinate(-1,-1)
+            print_parents(parents, currCoord.x, currCoord.y)
+        end
+        println(curr_x, ", ", curr_y)
+    end
 end
 
 function updated_dijkstra(graph::Matrix{Vertex}, start_x::Int64, start_y::Int64, finish_x::Int64, finish_y::Int64)
@@ -187,7 +192,8 @@ function updated_dijkstra(graph::Matrix{Vertex}, start_x::Int64, start_y::Int64,
     distances[start_x, start_y] = 0
 
     # parents matrix
-    parents = Matrix{Coord}(undef, size(graph, 1), size(graph, 2))
+    parents::Matrix{Coordinate} = [Coordinate(-1,-1) for i in 1:size(graph,1), j in 1:size(graph,2)]
+    parents[start_x, start_y] = Coordinate(-1,-1)
 
     # arbitrary value
     min_x, min_y = 1, 1
@@ -204,15 +210,22 @@ function updated_dijkstra(graph::Matrix{Vertex}, start_x::Int64, start_y::Int64,
         uncovered_nodes[min_x, min_y] = true
     end
     println("Distance from vertex (",start_x, ", ", start_y, ") to vertex (", finish_x, ", ", finish_y, "): ", distances[finish_x, finish_y])
-    println("Path from (",start_x, ", ", start_y, "): ")
-    # for i in 1:size(graph, 1)
-    #     for j in 1:size(graph, 2)
-    #         println("to (", i, ", ", j, "): ", parents[i, j])
-    #     end
-    # end 
-    # printing path from start to end
-    print_parents(parents, finish_x, finish_y)
+    println("Path from (",start_x, ", ", start_y, ") to (", finish_x, ", ", finish_y, "):")
+    # println(parents)
+    # # printing path from start to end
+    # print_parents(parents, finish_x, finish_y)  
     
+    return parents
+end
+
+function path_creation(parents::Matrix{Coordinate}, start_x::Int64, start_y::Int64, finish_x::Int64, finish_y::Int64)
+    path::Vector{Coordinate} = [Coordinate(finish_x, finish_y)]
+    currCoord = parents[finish_x, finish_y]
+    while currCoord.x != -1 && currCoord.y != -1
+        push!(path, currCoord)
+        currCoord = parents[currCoord.x, currCoord.y]
+    end
+    return path
 end
 
 # Testing
@@ -229,15 +242,17 @@ function main()
         Vertex(0, 0, 5, 0) Vertex(3, 5, 3, 0) Vertex(0, 3, 0, 0)
     ]
     # Find the shortest path to go from top left (1,1) pixel to bottom right pixel (3,3)
-    updated_dijkstra(test_graph, 1, 1, 3, 3)
+    start_x::Int64, start_y::Int64, finish_x::Int64, finish_y::Int64 = 50, 50, 450, 450
+
 
 
     # Test using an actual .map file
     # Transform the .map file into a matrix of Char
-    # mapChar::Matrix{Char} = map_to_matrix("smaller.map")
-    # # Transform a Char matrix into a matrix of vertices, corresponding to the graph of the map
-    # mapVertices::Matrix{Vertex} = map_to_vertices(mapChar)
-
+    mapChar::Matrix{Char} = map_to_matrix("divideandconquer.map")
+    # Transform a Char matrix into a matrix of vertices, corresponding to the graph of the map
+    mapVertices::Matrix{Vertex} = map_to_vertices(mapChar)
+    parents = updated_dijkstra(mapVertices, start_x, start_y, finish_x, finish_y)
+    path = path_creation(parents, start_x, start_y, finish_x, finish_y)
     # updated_dijkstra(mapVertices, 1, 1, 3, 1)
-
+    return path
 end
