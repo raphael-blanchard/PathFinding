@@ -1,11 +1,9 @@
+# Libraries
 using Images
+# Files used
 include("utils.jl")
-A = rand(3, 4, 5)
-# A[rgb channels, row, column]
-A[:,1,1] = [0 0 0]
-A[:,2,1] = [0.0058 0.7168 0.9949]
-A[:, 1, 2] = [0.1008 0.5409 0.112]
-# A[:,] = [1 1 1]
+
+
 
 map_colors::Dict{Char, Matrix{Float32}} = Dict(
     '.' => [1 1 1],
@@ -59,13 +57,20 @@ end
 
 function draw_path(imgMat::Array{Float64, 3}, path::Vector{Coordinate}, start_x::Int64, start_y::Int64, finish_x::Int64, finish_y::Int64)
     for coord in path
-        imgMat[:, coord.x, coord.y] = [0.2 1.0 0.2]
+        # imgMat[:, coord.x, coord.y] = [0.2 1.0 0.2]
+        imgMat[:, coord.x, coord.y] = [1 0 0]
     end
 end
 
-test = map_to_matrix("brc201d.map")
-img_test = map_to_img(test)
-path = main()
+start_x::Int64, start_y::Int64, finish_x::Int64, finish_y::Int64 = 50, 319, 395, 81
+# Transform the .map file into a matrix of Char
+mapChar::Matrix{Char} = map_to_matrix("AR0071SR.map")
+# Transform a Char matrix into a matrix of vertices, corresponding to the graph of the map
+mapVertices::Matrix{Vertex} = map_to_vertices(mapChar)
+parents = updated_dijkstra(mapVertices, start_x, start_y, finish_x, finish_y)
+path = path_creation(parents, start_x, start_y, finish_x, finish_y)
+
+img_test = map_to_img(mapChar)
 draw_path(img_test, path, 1,1,1,1)
 
-save("brc201d.png", colorview(RGB, img_test))
+save("Results/AR0071SR.png", colorview(RGB, img_test))

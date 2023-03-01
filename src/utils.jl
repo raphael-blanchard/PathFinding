@@ -242,13 +242,13 @@ function main()
         Vertex(0, 0, 5, 0) Vertex(3, 5, 3, 0) Vertex(0, 3, 0, 0)
     ]
     # Find the shortest path to go from top left (1,1) pixel to bottom right pixel (3,3)
-    start_x::Int64, start_y::Int64, finish_x::Int64, finish_y::Int64 = 75, 70, 380, 372
+    start_x::Int64, start_y::Int64, finish_x::Int64, finish_y::Int64 = 50, 250, 450, 400
 
 
 
     # Test using an actual .map file
     # Transform the .map file into a matrix of Char
-    mapChar::Matrix{Char} = map_to_matrix("brc201d.map")
+    mapChar::Matrix{Char} = map_to_matrix("theglaive.map")
     # Transform a Char matrix into a matrix of vertices, corresponding to the graph of the map
     mapVertices::Matrix{Vertex} = map_to_vertices(mapChar)
     parents = updated_dijkstra(mapVertices, start_x, start_y, finish_x, finish_y)
