@@ -35,6 +35,8 @@ costs::Dict{Char, Dict{Char, Int64}} = Dict(
         'W' => 5)
 )
 
+
+
 function map_to_matrix(filename)
     open("../Data/$filename") do f
         # Case if the text file isn't a map
