@@ -47,11 +47,10 @@ function map_to_matrix(filename)
         width_line = readline(f)
         width = parse(Int64, width_line[7:end])
 
-        println((height, width))
+        # println((height, width))
         
         # map line
         whatever = readline(f)
-
 
         MatrixOfChars = Matrix{Char}(undef, height, width)
         # transform the map into a matrix of chars
@@ -61,8 +60,6 @@ function map_to_matrix(filename)
            MatrixOfChars[i, :] = collect(curr_line)
            i+=1
         end
-        
-        # @show MatrixOfChars
         return MatrixOfChars
     end
 end
@@ -147,7 +144,6 @@ function update_distances(distances::Matrix{Int64}, uncovered_nodes::Matrix{Bool
     # top neighbour
     if graph[i, j].top > 0 && uncovered_nodes[i-1, j] == false && distances[i-1, j] > distances[i, j] + graph[i, j].top
         parents[i-1, j] = Coordinate(i, j)
-        # shortest_paths[i-1, j] = [shortest_paths[i,j]; (i-1, j)]
         distances[i-1, j] = distances[i, j] + graph[i, j].top
         if (haskey(pq, (i-1,j)))
             delete!(pq, (i-1,j))
@@ -157,7 +153,6 @@ function update_distances(distances::Matrix{Int64}, uncovered_nodes::Matrix{Bool
     # left neighbour
     if graph[i, j].left > 0 && uncovered_nodes[i, j-1] == false && distances[i, j-1] > distances[i, j] + graph[i, j].left
         parents[i, j-1] = Coordinate(i, j)
-        # shortest_paths[i, j-1] = [shortest_paths[i,j]; (i-1, j)]
         distances[i, j-1] = distances[i, j] + graph[i, j].left
         if (haskey(pq, (i,j-1)))
             delete!(pq, (i,j-1))
@@ -167,7 +162,6 @@ function update_distances(distances::Matrix{Int64}, uncovered_nodes::Matrix{Bool
     # right neighbour
     if graph[i, j].right > 0 && uncovered_nodes[i, j+1] == false && distances[i, j+1] > distances[i, j] + graph[i, j].right
         parents[i, j+1] = Coordinate(i, j)
-        # shortest_paths[i, j+1] = [shortest_paths[i,j]; (i, j+1)]
         distances[i, j+1] = distances[i, j] + graph[i, j].right
         if (haskey(pq, (i,j+1)))
             delete!(pq, (i,j+1))
@@ -177,14 +171,12 @@ function update_distances(distances::Matrix{Int64}, uncovered_nodes::Matrix{Bool
     # bottom neighbour
     if graph[i, j].bottom > 0 && uncovered_nodes[i+1, j] == false && distances[i+1, j] > distances[i, j] + graph[i, j].bottom
         parents[i+1, j] = Coordinate(i, j)
-        # shortest_paths[i+1, j] = [shortest_paths[i,j]; (i+1, j)]
         distances[i+1, j] = distances[i, j] + graph[i, j].bottom
         if (haskey(pq, (i+1,j)))
             delete!(pq, (i+1,j))
         end
         enqueue!(pq, (i+1, j), distances[i+1, j])
     end
-    # return distances, parents
 end
 
 function print_parents(parents::Matrix{Coordinate}, curr_x, curr_y)
@@ -216,32 +208,21 @@ function updated_dijkstra(graph::Matrix{Vertex}, start_x::Int64, start_y::Int64,
     min_x, min_y = 1, 1
 
     pq = PriorityQueue()
-    # for i in 1:size(graph,1)
-    #     for j in 1:size(graph,2)
-    #         if i != start_x && j != start_y
-    #             enqueue!(pq, (i, j), 99999999)
-    #         end
-    #     end
-    # end
     enqueue!(pq, (start_x, start_y), 0)
     # Until the path to the finish hasn't been found or if there are no more visitable nodes, we iterate
-    # while uncovered_nodes[finish_x, finish_y] == false || (min_x==0 && min_y==0)
     while !isempty(pq)
         # Getting the index of the unvisited and closest node to the starting point
-        # min_x, min_y = min_dist_vert(distances, uncovered_nodes)
-        # println(distances[finish_x, finish_y])
-        # min_dist = distances[min_x, min_y]
         min_x, min_y = dequeue!(pq)
 
         # Update the distances of the pixels around the pixel at index (min_x, min_y) 
-        # distances, parents = update_distances(distances, uncovered_nodes, graph, min_x, min_y, parents)
         update_distances(distances, uncovered_nodes, graph, min_x, min_y, parents, pq)
+        
         # marking the node we just worked around as visited
         uncovered_nodes[min_x, min_y] = true
     end
-    # println("Distance from vertex (",start_x, ", ", start_y, ") to vertex (", finish_x, ", ", finish_y, "): ", distances[finish_x, finish_y])
-    # println("Path from (",start_x, ", ", start_y, ") to (", finish_x, ", ", finish_y, "):")
-    # println(parents)
+    println("Distance from vertex (",start_x, ", ", start_y, ") to vertex (", finish_x, ", ", finish_y, "): ", distances[finish_x, finish_y])
+    println("Path from (",start_x, ", ", start_y, ") to (", finish_x, ", ", finish_y, "):")
+    
     # # printing path from start to end
     # print_parents(parents, finish_x, finish_y)  
     
@@ -274,15 +255,7 @@ function main()
     # Find the shortest path to go from top left (1,1) pixel to bottom right pixel (3,3)
     start_x::Int64, start_y::Int64, finish_x::Int64, finish_y::Int64 = 1,1,3,3
 
-
-
-    # Test using an actual .map file
-    # Transform the .map file into a matrix of Char
-    mapChar::Matrix{Char} = map_to_matrix("theglaive.map")
-    # Transform a Char matrix into a matrix of vertices, corresponding to the graph of the map
-    mapVertices::Matrix{Vertex} = map_to_vertices(['.' for i in 1:512, j in 1:512])
     parents = updated_dijkstra(test_graph, start_x, start_y, finish_x, finish_y)
     path = path_creation(parents, start_x, start_y, finish_x, finish_y)
-    # updated_dijkstra(mapVertices, 1, 1, 3, 1)
     return path
 end
