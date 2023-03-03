@@ -6,9 +6,9 @@ costs::Dict{Char, Dict{Char, Int64}} = Dict(
     '.' => Dict(
         '.' => 1,
         '@' => 0,
-        'T' => 3,
-        'S' => 3,
-        'W' => 3),
+        'T' => 0,
+        'S' => 5,
+        'W' => 8),
     '@' => Dict(
         '.' => 0,
         '@' => 0,
@@ -16,29 +16,29 @@ costs::Dict{Char, Dict{Char, Int64}} = Dict(
         'S' => 0,
         'W' => 0),
     'T' => Dict(
-        '.' => 3,
+        '.' => 0,
         '@' => 0,
-        'T' => 5,
-        'S' => 5,
-        'W' => 5),
+        'T' => 0,
+        'S' => 0,
+        'W' => 0),
     'S' => Dict(
-        '.' => 3,
+        '.' => 1,
         '@' => 0,
-        'T' => 5,
+        'T' => 0,
         'S' => 5,
-        'W' => 5),
+        'W' => 8),
     'W' => Dict(
-        '.' => 3,
+        '.' => 1,
         '@' => 0,
-        'T' => 5,
+        'T' => 0,
         'S' => 5,
-        'W' => 5)
+        'W' => 8)
 )
 
 
 
 function map_to_matrix(filename)
-    open("../Data/$filename") do f
+    open("../Data/Maps/$filename") do f
         # Case if the text file isn't a map
         if readline(f) != "type octile" return "Not a map" end
 

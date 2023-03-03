@@ -46,8 +46,8 @@ function print_path(path::Vector{Coordinate})
 end
 
 function main()
-    filename::String = "theglaive"
-    start_x::Int64, start_y::Int64, finish_x::Int64, finish_y::Int64 = 50, 250, 400, 400
+    filename::String = "timbermawhold"
+    start_x::Int64, start_y::Int64, finish_x::Int64, finish_y::Int64 = 173, 321, 434, 50
     # Transform the .map file into a matrix of Char
     mapChar::Matrix{Char} = map_to_matrix("$filename.map")
     # Transform a Char matrix into a matrix of vertices, corresponding to the graph of the map
@@ -58,6 +58,6 @@ function main()
     img_test = map_to_img(mapChar)
     draw_path(img_test, path, start_x, start_y, finish_x, finish_y)
 
-    save("../Results/$filename.png", colorview(RGB, img_test))
+    save("../Data/Results/$filename.png", colorview(RGB, img_test))
     # print_path(path)
 end
