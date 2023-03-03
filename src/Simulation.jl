@@ -4,7 +4,7 @@
 using Images
 # Files used
 include("Dijkstra.jl")
-# include("AStar.jl")
+include("AStar.jl")
 
 
 
@@ -47,17 +47,18 @@ end
 
 function main()
     filename::String = "timbermawhold"
+    filename2::String = "timbermawholdAstar"
     start_x::Int64, start_y::Int64, finish_x::Int64, finish_y::Int64 = 173, 321, 434, 50
     # Transform the .map file into a matrix of Char
     mapChar::Matrix{Char} = map_to_matrix("$filename.map")
     # Transform a Char matrix into a matrix of vertices, corresponding to the graph of the map
     mapVertices::Matrix{Vertex} = map_to_vertices(mapChar)
-    parents = updated_dijkstra(mapVertices, start_x, start_y, finish_x, finish_y)
+    parents = astar(mapVertices, start_x, start_y, finish_x, finish_y)
     path::Vector{Coordinate} = path_creation(parents, start_x, start_y, finish_x, finish_y)
 
     img_test = map_to_img(mapChar)
     draw_path(img_test, path, start_x, start_y, finish_x, finish_y)
 
-    save("../Data/Results/$filename.png", colorview(RGB, img_test))
+    save("../Data/Results/$filename2.png", colorview(RGB, img_test))
     # print_path(path)
 end
