@@ -212,7 +212,8 @@ function updated_dijkstra(graph::Matrix{Vertex}, start_x::Int64, start_y::Int64,
     pq = PriorityQueue()
     enqueue!(pq, (start_x, start_y), 0)
     # Until the path to the finish hasn't been found or if there are no more visitable nodes, we iterate
-    while !isempty(pq)
+    # while !isempty(pq)
+    while uncovered_nodes[finish_x, finish_y] == false || min_x == -1 || min_y == -1
         # Getting the index of the unvisited and closest node to the starting point
         min_x, min_y = dequeue!(pq)
 

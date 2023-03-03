@@ -12,7 +12,6 @@ alpha_to_classic::Dict{Char, Char} = Dict(
     'N' => 'S',
     'M' => 'S',
     'I' => 'S',
-    
 
 )
 

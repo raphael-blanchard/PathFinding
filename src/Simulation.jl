@@ -12,8 +12,10 @@ map_colors::Dict{Char, Matrix{Float32}} = Dict(
     '.' => [1 1 1],
     '@' => [0 0 0],
     'W' => [0.0058 0.7168 0.9949],
+    # 'W' => [0.0627451  0.0  0.647059],
     'T' => [0.1008 0.5409 0.112],
-    'S' => [0.7607 0.6980 0.50196]
+    # 'S' => [0.7607 0.6980 0.50196]
+    'S' => [0.333333  0.360784  0.270588]
 )
 
 function map_to_img(map::Matrix{Char})
@@ -44,8 +46,8 @@ function print_path(path::Vector{Coordinate})
 end
 
 function main()
-    filename::String = "16room_000"
-    start_x::Int64, start_y::Int64, finish_x::Int64, finish_y::Int64 = 1, 9, 512, 512
+    filename::String = "theglaive"
+    start_x::Int64, start_y::Int64, finish_x::Int64, finish_y::Int64 = 50, 250, 400, 400
     # Transform the .map file into a matrix of Char
     mapChar::Matrix{Char} = map_to_matrix("$filename.map")
     # Transform a Char matrix into a matrix of vertices, corresponding to the graph of the map
@@ -57,5 +59,5 @@ function main()
     draw_path(img_test, path, start_x, start_y, finish_x, finish_y)
 
     save("../Results/$filename.png", colorview(RGB, img_test))
-    print_path(path)
+    # print_path(path)
 end
