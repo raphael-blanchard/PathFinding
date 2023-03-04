@@ -1,7 +1,12 @@
 # PathFinding
 Implementation and optimization of pathfinding algorithms in Julia
 
-![divideandconquer](https://user-images.githubusercontent.com/86181145/222389973-4a10acd8-4b69-4486-960f-fcb203cd2aef.png)
+Path found with Dijkstra (left) and A* using the Manhattan distance (right):
+<p float="left">
+  <img src="https://user-images.githubusercontent.com/86181145/222896405-7adad3cb-19c5-406c-90b2-ac16be1110dd.png" width="49%" height="49%">
+  <img src="https://user-images.githubusercontent.com/86181145/222896324-29b188d6-a9ea-4a2d-9bc8-e1fbb39604e9.png" width="49%" height="49%">
+</p>
+
 
 Update:
 As we are working on finding a path on a map, using the general way of using dijkstra with matrices wouldn't be efficient.
