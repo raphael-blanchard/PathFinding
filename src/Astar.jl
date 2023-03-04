@@ -78,7 +78,8 @@ end
 
 
 # Function that updates the distance values of the neighbouring node at index (i, j)
-function update_distances_astar(distances::Matrix{Int64}, uncovered_nodes::Matrix{Bool}, graph::Matrix{Vertex}, i::Int64, j::Int64, finish_x::Int64, finish_y::Int64, parents::Matrix{Coordinate}, pq)
+function update_distances_astar(distances::Matrix{Int64}, uncovered_nodes::Matrix{Bool}, graph::Matrix{Vertex}, i::Int64, j::Int64, finish_x::Int64, finish_y::Int64, parents::Matrix{Coordinate}, pq, node_count::Int64, visited_nodes::Vector{Coordinate})
+    count = 0
     # top neighbour
     if graph[i, j].top > 0 && uncovered_nodes[i-1, j] == false && distances[i-1, j] > distances[i, j] + graph[i, j].top
         parents[i-1, j] = Coordinate(i, j)
@@ -87,6 +88,8 @@ function update_distances_astar(distances::Matrix{Int64}, uncovered_nodes::Matri
             delete!(pq, (i-1,j))
         end
         enqueue!(pq, (i-1, j), distances[i-1, j] + heuristic(i-1, j, finish_x, finish_y))
+        count += 1
+        push!(visited_nodes, Coordinate(i-1, j))
     end
     # left neighbour
     if graph[i, j].left > 0 && uncovered_nodes[i, j-1] == false && distances[i, j-1] > distances[i, j] + graph[i, j].left
@@ -96,6 +99,8 @@ function update_distances_astar(distances::Matrix{Int64}, uncovered_nodes::Matri
             delete!(pq, (i,j-1))
         end
         enqueue!(pq, (i, j-1), distances[i, j-1] + heuristic(i, j-1, finish_x, finish_y))
+        count += 1
+        push!(visited_nodes, Coordinate(i, j-1))
     end
     # right neighbour
     if graph[i, j].right > 0 && uncovered_nodes[i, j+1] == false && distances[i, j+1] > distances[i, j] + graph[i, j].right
@@ -105,6 +110,8 @@ function update_distances_astar(distances::Matrix{Int64}, uncovered_nodes::Matri
             delete!(pq, (i,j+1))
         end
         enqueue!(pq, (i, j+1), distances[i, j+1] + heuristic(i, j+1, finish_x, finish_y))
+        count += 1
+        push!(visited_nodes, Coordinate(i, j+1))
     end
     # bottom neighbour
     if graph[i, j].bottom > 0 && uncovered_nodes[i+1, j] == false && distances[i+1, j] > distances[i, j] + graph[i, j].bottom
@@ -114,7 +121,10 @@ function update_distances_astar(distances::Matrix{Int64}, uncovered_nodes::Matri
             delete!(pq, (i+1,j))
         end
         enqueue!(pq, (i+1, j), distances[i+1, j] + heuristic(i+1, j, finish_x, finish_y))
+        count += 1
+        push!(visited_nodes, Coordinate(i+1, j))
     end
+    return node_count + count
 end
 
 function print_parents(parents::Matrix{Coordinate}, curr_x, curr_y)
@@ -132,6 +142,12 @@ function heuristic(curr_x::Int64, curr_y::Int64, finish_x::Int64, finish_y::Int6
 end
 
 function astar(graph::Matrix{Vertex}, start_x::Int64, start_y::Int64, finish_x::Int64, finish_y::Int64)
+    # Number of visited states
+    node_count::Int64 = 1
+
+    # Visited nodes
+    visited_nodes::Vector{Coordinate} = [Coordinate(start_x, start_y)]
+
     # Matrix that will hold the shortest path from starting point to the node (i, j)
     shortest_paths::Matrix{Vector{Tuple{Int64, Int64}}} = [[] for i in 1:size(graph, 1), j in 1:size(graph, 2)]
     shortest_paths[start_x, start_y] = [(start_x, start_y)]
@@ -158,7 +174,7 @@ function astar(graph::Matrix{Vertex}, start_x::Int64, start_y::Int64, finish_x::
         min_x, min_y = dequeue!(pq)
 
         # Update the distances of the pixels around the pixel at index (min_x, min_y) 
-        update_distances_astar(distances, uncovered_nodes, graph, min_x, min_y, finish_x, finish_y, parents, pq)
+        node_count = update_distances_astar(distances, uncovered_nodes, graph, min_x, min_y, finish_x, finish_y, parents, pq, node_count, visited_nodes)
         
         # marking the node we just worked around as visited
         uncovered_nodes[min_x, min_y] = true
@@ -168,8 +184,10 @@ function astar(graph::Matrix{Vertex}, start_x::Int64, start_y::Int64, finish_x::
     
     # # printing path from start to end
     # print_parents(parents, finish_x, finish_y)  
+
+    println("Number of visited nodes: ", node_count)
     
-    return parents
+    return parents, visited_nodes
 end
 
 function path_creation(parents::Matrix{Coordinate}, start_x::Int64, start_y::Int64, finish_x::Int64, finish_y::Int64)
@@ -181,6 +199,7 @@ function path_creation(parents::Matrix{Coordinate}, start_x::Int64, start_y::Int
     end
     return path
 end
+
 
 # Testing
 function main()
