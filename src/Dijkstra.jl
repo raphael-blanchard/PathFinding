@@ -1,68 +1,9 @@
 # Libraries
 using DataStructures
+include("helpers.jl")
 # Associated costs of a movement
 # E.g: '.' -> 'T' costs 3, and we would access this value by doing costs['.']['T']
-costs::Dict{Char, Dict{Char, Int64}} = Dict(
-    '.' => Dict(
-        '.' => 1,
-        '@' => 0,
-        'T' => 0,
-        'S' => 5,
-        'W' => 8),
-    '@' => Dict(
-        '.' => 0,
-        '@' => 0,
-        'T' => 0,
-        'S' => 0,
-        'W' => 0),
-    'T' => Dict(
-        '.' => 0,
-        '@' => 0,
-        'T' => 0,
-        'S' => 0,
-        'W' => 0),
-    'S' => Dict(
-        '.' => 1,
-        '@' => 0,
-        'T' => 0,
-        'S' => 5,
-        'W' => 8),
-    'W' => Dict(
-        '.' => 1,
-        '@' => 0,
-        'T' => 0,
-        'S' => 5,
-        'W' => 8)
-)
 
-function map_to_matrix(filename)
-    open("../Data/Maps/$filename") do f
-        # Case if the text file isn't a map
-        if readline(f) != "type octile" return "Not a map" end
-
-        height_line = readline(f)
-        # getting the height as Int64
-        height = parse(Int64, height_line[8:end])
-
-        width_line = readline(f)
-        width = parse(Int64, width_line[7:end])
-
-        # println((height, width))
-        
-        # map line
-        whatever = readline(f)
-
-        MatrixOfChars = Matrix{Char}(undef, height, width)
-        # transform the map into a matrix of chars
-        i = 1
-        while ! eof(f)       
-           curr_line = readline(f)
-           MatrixOfChars[i, :] = collect(curr_line)
-           i+=1
-        end
-        return MatrixOfChars
-    end
-end
 
 struct Vertex
     top::Int64
