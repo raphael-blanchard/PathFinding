@@ -3,8 +3,7 @@
 # Libraries
 using Images
 # Files used
-include("dijkstra.jl")
-include("astar.jl")
+include("helpers.jl")
 
 # Dictionnary that associate an RGB value to each char present in a map
 map_colors::Dict{Char, Matrix{Float32}} = Dict(
@@ -37,10 +36,10 @@ function draw_path(imgMat::Array{Float64, 3}, path::Vector{Coordinate}, start_x:
 end
 
 function main()
-    filename::String = "theglaive"
-    filename2::String = "theglaiveAstar"
-    
-    start_x::Int64, start_y::Int64, finish_x::Int64, finish_y::Int64 = 173, 321, 434, 50
+    filename::String = "divideandconquer"
+    filename2::String = "divideandconquerAstar"
+
+    start_x::Int64, start_y::Int64, finish_x::Int64, finish_y::Int64 = 49, 64, 450, 450
     # Transform the .map file into a matrix of Char
     mapChar::Matrix{Char} = map_to_matrix("$filename.map")
     # Transform a Char matrix into a matrix of vertices, corresponding to the graph of the map

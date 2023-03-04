@@ -1,6 +1,5 @@
 # Libraries
 using DataStructures
-include("helpers.jl")
 # Associated costs of a movement
 # E.g: '.' -> 'T' costs 3, and we would access this value by doing costs['.']['T']
 

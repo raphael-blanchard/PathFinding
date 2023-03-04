@@ -1,5 +1,19 @@
 # Additional file to tweak the simulation except
-# include("Dijkstra.jl")
+include("dijkstra.jl")
+include("astar.jl")
+
+# Data structures
+struct Vertex
+    top::Int64
+    left::Int64
+    right::Int64
+    bottom::Int64
+end
+
+mutable struct Coordinate
+    x::Int64
+    y::Int64
+end
 
 # update code to use new costs
 costs::Dict{Char, Dict{Char, Int64}} = Dict(

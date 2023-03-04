@@ -1,6 +1,5 @@
 # Libraries
 using DataStructures
-include("helpers.jl")
 
 
 struct Vertex
