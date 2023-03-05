@@ -1,90 +1,13 @@
 # Libraries
 using DataStructures
-# Associated costs of a movement
-# E.g: '.' -> 'T' costs 3, and we would access this value by doing costs['.']['T']
-
-
-struct Vertex
-    top::Int64
-    left::Int64
-    right::Int64
-    bottom::Int64
-end
-
-mutable struct Coordinate
-    x::Int64
-    y::Int64
-end
-# Creates a Vertex from a point (i, j) in the matrix charMat
-function transform_vertex(i::Int64, j::Int64, charMat::Matrix{Char})
-    # Top border case
-    if (i==1)
-        # Top left edge
-        if (j==1) 
-            return Vertex(0, 0, costs[charMat[i, j]][charMat[i, j+1]], costs[charMat[i, j]][charMat[i+1, j]])
-        # Top right edge
-        elseif j==size(charMat,2)
-            return Vertex(0, costs[charMat[i, j]][charMat[i, j-1]], 0, costs[charMat[i, j]][charMat[i+1, j]])
-        # Rest of the top border
-        else
-            return Vertex(0, costs[charMat[i, j]][charMat[i, j-1]], costs[charMat[i, j]][charMat[i, j+1]], costs[charMat[i, j]][charMat[i+1, j]])
-        end
-    # Bottom border case
-    elseif (i==size(charMat,1))
-        # Bottom left edge
-        if (j==1) 
-            return Vertex(costs[charMat[i, j]][charMat[i-1, j]], 0, costs[charMat[i, j]][charMat[i, j+1]], 0)
-        # Bottom right edge
-        elseif j==size(charMat,2)
-            return Vertex(costs[charMat[i, j]][charMat[i-1, j]], costs[charMat[i, j]][charMat[i, j-1]], 0, 0)
-        # Rest of the bottom border
-        else
-            return Vertex(costs[charMat[i, j]][charMat[i-1, j]], costs[charMat[i, j]][charMat[i, j-1]], costs[charMat[i, j]][charMat[i, j+1]], 0)
-        end
-    # Left border except top and bottom left edges (treated before)
-    elseif (j==1)
-        return Vertex(costs[charMat[i, j]][charMat[i-1, j]], 0, costs[charMat[i, j]][charMat[i, j+1]], costs[charMat[i, j]][charMat[i+1, j]])
-    # Right border except top and bottom right edges (treated before)
-    elseif (j==size(charMat,2))
-        return Vertex(costs[charMat[i, j]][charMat[i-1, j]], costs[charMat[i, j]][charMat[i, j-1]], 0, costs[charMat[i, j]][charMat[i+1, j]])
-    # Other cases
-    else
-        return Vertex(costs[charMat[i, j]][charMat[i-1, j]], costs[charMat[i, j]][charMat[i, j-1]], costs[charMat[i, j]][charMat[i, j+1]], costs[charMat[i, j]][charMat[i+1, j]])
-    end
-end
-
-# Transforming a map to a matrix of Vertices
-function map_to_vertices(charMat::Matrix{Char})
-    vertices = Matrix{Vertex}(undef, size(charMat, 1), size(charMat, 2))
-    for i in 1:size(charMat, 1)
-        for j in 1:size(charMat, 2)
-            vertices[i, j] = transform_vertex(i, j, charMat)
-        end
-    end
-    return vertices
-end
-
-function min_dist_vert(distances::Matrix{Int64}, uncovered_nodes::Matrix{Bool})
-    min_dist::Int64 = typemax(Int64)
-    min_x, min_y = 0, 0
-    for i in 1:size(distances, 1)
-        for j in 1:size(distances, 2)
-            if distances[i, j] < min_dist && uncovered_nodes[i, j] == false
-                min_dist = distances[i, j]
-                min_x, min_y = i, j
-            end
-        end
-    end
-    return min_x, min_y
-end
 
 
 # Function that updates the distance values of the neighbouring node at index (i, j)
-function update_distances(distances::Matrix{Int64}, uncovered_nodes::Matrix{Bool}, graph::Matrix{Vertex}, i::Int64, j::Int64, parents::Matrix{Coordinate}, pq, node_count::Int64)
+function update_distances(distances::Matrix{Int64}, uncovered_nodes::Matrix{Bool}, graph::Matrix{Vertex}, i::Int64, j::Int64, parents::Matrix{Tuple{Int64, Int64}}, pq, node_count::Int64)
     # top neighbour
     count = 0
     if graph[i, j].top > 0 && uncovered_nodes[i-1, j] == false && distances[i-1, j] > distances[i, j] + graph[i, j].top
-        parents[i-1, j] = Coordinate(i, j)
+        parents[i-1, j] = (i, j)
         distances[i-1, j] = distances[i, j] + graph[i, j].top
         if (haskey(pq, (i-1,j)))
             delete!(pq, (i-1,j))
@@ -94,7 +17,7 @@ function update_distances(distances::Matrix{Int64}, uncovered_nodes::Matrix{Bool
     end
     # left neighbour
     if graph[i, j].left > 0 && uncovered_nodes[i, j-1] == false && distances[i, j-1] > distances[i, j] + graph[i, j].left
-        parents[i, j-1] = Coordinate(i, j)
+        parents[i, j-1] = (i, j)
         distances[i, j-1] = distances[i, j] + graph[i, j].left
         if (haskey(pq, (i,j-1)))
             delete!(pq, (i,j-1))
@@ -104,7 +27,7 @@ function update_distances(distances::Matrix{Int64}, uncovered_nodes::Matrix{Bool
     end
     # right neighbour
     if graph[i, j].right > 0 && uncovered_nodes[i, j+1] == false && distances[i, j+1] > distances[i, j] + graph[i, j].right
-        parents[i, j+1] = Coordinate(i, j)
+        parents[i, j+1] = (i, j)
         distances[i, j+1] = distances[i, j] + graph[i, j].right
         if (haskey(pq, (i,j+1)))
             delete!(pq, (i,j+1))
@@ -114,7 +37,7 @@ function update_distances(distances::Matrix{Int64}, uncovered_nodes::Matrix{Bool
     end
     # bottom neighbour
     if graph[i, j].bottom > 0 && uncovered_nodes[i+1, j] == false && distances[i+1, j] > distances[i, j] + graph[i, j].bottom
-        parents[i+1, j] = Coordinate(i, j)
+        parents[i+1, j] = (i, j)
         distances[i+1, j] = distances[i, j] + graph[i, j].bottom
         if (haskey(pq, (i+1,j)))
             delete!(pq, (i+1,j))
@@ -125,11 +48,11 @@ function update_distances(distances::Matrix{Int64}, uncovered_nodes::Matrix{Bool
     return node_count + count
 end
 
-function print_parents(parents::Matrix{Coordinate}, curr_x, curr_y)
+function print_parents(parents::Matrix{Tuple{Int64, Int64}}, curr_x, curr_y)
     if (curr_x <= size(parents, 1) && curr_x >= 1 && curr_y <= size(parents,2) && curr_y>= 1)
-        currCoord = parents[curr_x, curr_y]
-        if currCoord != Coordinate(-1,-1)
-            print_parents(parents, currCoord.x, currCoord.y)
+        tmp_x, tmp_y = parents[curr_x, curr_y]
+        if (tmp_x, tmp_y) != (-1,-1)
+            print_parents(parents, tmp_x, tmp_y)
         end
         println(curr_x, ", ", curr_y)
     end
@@ -150,8 +73,8 @@ function updated_dijkstra(graph::Matrix{Vertex}, start_x::Int64, start_y::Int64,
     distances[start_x, start_y] = 0
 
     # parents matrix
-    parents::Matrix{Coordinate} = [Coordinate(-1,-1) for i in 1:size(graph,1), j in 1:size(graph,2)]
-    parents[start_x, start_y] = Coordinate(-1,-1)
+    parents::Matrix{Tuple{Int64, Int64}} = [(-1,-1) for i in 1:size(graph,1), j in 1:size(graph,2)]
+    parents[start_x, start_y] = (-1,-1)
 
     # arbitrary value
     min_x, min_y = 1, 1
@@ -181,12 +104,12 @@ function updated_dijkstra(graph::Matrix{Vertex}, start_x::Int64, start_y::Int64,
     return parents
 end
 
-function path_creation(parents::Matrix{Coordinate}, start_x::Int64, start_y::Int64, finish_x::Int64, finish_y::Int64)
-    path::Vector{Coordinate} = [Coordinate(finish_x, finish_y)]
-    currCoord = parents[finish_x, finish_y]
-    while currCoord.x != -1 && currCoord.y != -1
-        push!(path, currCoord)
-        currCoord = parents[currCoord.x, currCoord.y]
+function path_creation(parents::Matrix{Tuple{Int64, Int64}}, start_x::Int64, start_y::Int64, finish_x::Int64, finish_y::Int64)
+    path::Vector{Tuple{Int64, Int64}} = [(finish_x, finish_y)]
+    tmp_x, tmp_y = parents[finish_x, finish_y]
+    while (tmp_x, tmp_y) != (-1, -1)
+        push!(path, (tmp_x, tmp_y))
+        tmp_x, tmp_y = parents[tmp_x, tmp_y]
     end
     return path
 end

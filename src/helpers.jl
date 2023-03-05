@@ -2,52 +2,6 @@
 include("dijkstra.jl")
 include("astar.jl")
 
-# Data structures
-struct Vertex
-    top::Int64
-    left::Int64
-    right::Int64
-    bottom::Int64
-end
-
-mutable struct Coordinate
-    x::Int64
-    y::Int64
-end
-
-# update code to use new costs
-costs::Dict{Char, Dict{Char, Int64}} = Dict(
-    '.' => Dict(
-        '.' => 1,
-        '@' => 0,
-        'T' => 0,
-        'S' => 5,
-        'W' => 8),
-    '@' => Dict(
-        '.' => 0,
-        '@' => 0,
-        'T' => 0,
-        'S' => 0,
-        'W' => 0),
-    'T' => Dict(
-        '.' => 0,
-        '@' => 0,
-        'T' => 0,
-        'S' => 0,
-        'W' => 0),
-    'S' => Dict(
-        '.' => 1,
-        '@' => 0,
-        'T' => 0,
-        'S' => 5,
-        'W' => 8),
-    'W' => Dict(
-        '.' => 1,
-        '@' => 0,
-        'T' => 0,
-        'S' => 5,
-        'W' => 8)
-)
 
 cost::Dict{Char, Int64} = Dict(
     '.' => 1,
@@ -89,28 +43,28 @@ function map_to_matrix(filename)
     end
 end
 
-# function printing the given path
-function print_path(path::Vector{Coordinate})
-    println("Path from (", path[1].x, ", ", path[1].y, ") to (", path[length(path)].x, ", ", path[length(path)].y, "):")
-    for i in length(path):-1:2
-        print("(", path[i].x, ", ", path[i].y, ") -> ")
-    end
-    println("(", path[1].x, ", ", path[1].y, ")")
-end
+# # function printing the given path
+# function print_path(path::Vector{Coordinate})
+#     println("Path from (", path[1].x, ", ", path[1].y, ") to (", path[length(path)].x, ", ", path[length(path)].y, "):")
+#     for i in length(path):-1:2
+#         print("(", path[i].x, ", ", path[i].y, ") -> ")
+#     end
+#     println("(", path[1].x, ", ", path[1].y, ")")
+# end
 
-# function needed to transform a terrain map to a normal map
-alpha_to_classic::Dict{Char, Char} = Dict(
-    'B' => 'W',
-    'C' => 'W',
-    'D' => 'S',
-    'E' => 'T',
-    'K' => '@',
-    'P' => '.',
-    'F' => 'S',
-    'N' => 'S',
-    'M' => 'S',
-    'I' => 'S',
-)
+# # function needed to transform a terrain map to a normal map
+# alpha_to_classic::Dict{Char, Char} = Dict(
+#     'B' => 'W',
+#     'C' => 'W',
+#     'D' => 'S',
+#     'E' => 'T',
+#     'K' => '@',
+#     'P' => '.',
+#     'F' => 'S',
+#     'N' => 'S',
+#     'M' => 'S',
+#     'I' => 'S',
+# )
 
 function alphamap_to_classic(map::Matrix{Char})
     return [alpha_to_classic[map[i, j]] for i in 1:size(map,1), j in 1:size(map,2)]

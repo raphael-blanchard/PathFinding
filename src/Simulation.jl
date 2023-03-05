@@ -26,20 +26,20 @@ function map_to_img(map::Matrix{Char})
 end
 
 # function that draws a given path on the image
-function draw_path(imgMat::Array{Float64, 3}, path::Vector{Coordinate}, start_x::Int64, start_y::Int64, finish_x::Int64, finish_y::Int64)
-    for coord in path
+function draw_path(imgMat::Array{Float64, 3}, path::Vector{Tuple{Int64, Int64}}, start_x::Int64, start_y::Int64, finish_x::Int64, finish_y::Int64)
+    for (x, y) in path
         # path
-        imgMat[:, coord.x, coord.y] = [1 0 0]
+        imgMat[:, x, y] = [1 0 0]
     end
     # starting point
     imgMat[:, start_x, start_y] = [0 0.812 0.012]
 end
 
 # function that marks visited nodes on an image
-function draw_visited(imgMat::Array{Float64, 3}, visited_nodes::Vector{Coordinate})
-    for coord in visited_nodes
+function draw_visited(imgMat::Array{Float64, 3}, visited_nodes::Vector{Tuple{Int64, Int64}})
+    for (x, y) in visited_nodes
         # path
-        imgMat[:, coord.x, coord.y] = [1.0  0.788235  0.129412]
+        imgMat[:, x, y] = [1.0  0.788235  0.129412]
     end
 end
 
@@ -51,14 +51,15 @@ function main()
     # Transform the .map file into a matrix of Char
     mapChar::Matrix{Char} = map_to_matrix("$filename.map")
     # Transform a Char matrix into a matrix of vertices, corresponding to the graph of the map
-    mapVertices::Matrix{Vertex} = map_to_vertices(mapChar)
-    parents, visited_nodes = astar(mapVertices, start_x, start_y, finish_x, finish_y)
-    path::Vector{Coordinate} = path_creation(parents, start_x, start_y, finish_x, finish_y)
+    mapInt::Matrix{Int64} = map_to_int(mapChar)
+    parents, visited_nodes = astar(mapInt, start_x, start_y, finish_x, finish_y)
+    path::Vector{Tuple{Int64, Int64}} = path_creation(parents, start_x, start_y, finish_x, finish_y)
 
     img_test = map_to_img(mapChar)
     draw_visited(img_test, visited_nodes)
     draw_path(img_test, path, start_x, start_y, finish_x, finish_y)
 
-    save("../dat/Results/$filename2.png", colorview(RGB, img_test))
+    # save("../dat/Results/$filename2.png", colorview(RGB, img_test))
     # print_path(path)
+    println("Done!")
 end
