@@ -44,10 +44,10 @@ function draw_visited(imgMat::Array{Float64, 3}, visited_nodes::Vector{Tuple{Int
 end
 
 function main()
-    filename::String = "divideandconquer"
-    filename2::String = "divideandconquerAstar"
+    filename::String = "Expedition"
+    filename2::String = "ExpeditionAstar"
 
-    start_x::Int64, start_y::Int64, finish_x::Int64, finish_y::Int64 = 49, 64, 450, 450
+    start_x::Int64, start_y::Int64, finish_x::Int64, finish_y::Int64 = 80, 150, 853, 926
     # Transform the .map file into a matrix of Char
     mapChar::Matrix{Char} = map_to_matrix("$filename.map")
     # Transform a Char matrix into a matrix of vertices, corresponding to the graph of the map
@@ -59,7 +59,7 @@ function main()
     draw_visited(img_test, visited_nodes)
     draw_path(img_test, path, start_x, start_y, finish_x, finish_y)
 
-    # save("../dat/Results/$filename2.png", colorview(RGB, img_test))
+    save("../dat/Results/$filename2.png", colorview(RGB, img_test))
     # print_path(path)
     println("Done!")
 end
