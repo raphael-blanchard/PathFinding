@@ -36,10 +36,18 @@ function draw_path(imgMat::Array{Float64, 3}, path::Vector{Tuple{Int64, Int64}},
 end
 
 # function that marks visited nodes on an image
-function draw_visited(imgMat::Array{Float64, 3}, visited_nodes::Vector{Tuple{Int64, Int64}})
-    for (x, y) in visited_nodes
-        # path
-        imgMat[:, x, y] = [1.0  0.788235  0.129412]
+# function draw_visited(imgMat::Array{Float64, 3}, visited_nodes::Vector{Tuple{Int64, Int64}})
+function draw_visited(imgMat::Array{Float64, 3}, visited_nodes::Matrix{Bool})
+    # for (x, y) in visited_nodes
+    #     # path
+    #     imgMat[:, x, y] = [1.0  0.788235  0.129412]
+    # end
+    for i in 1:size(visited_nodes, 2)
+        for j in 1:size(visited_nodes, 2)
+            if visited_nodes[i, j] == true
+                imgMat[:, i, j] = [1.0  0.788235  0.129412]
+            end
+        end
     end
 end
 
@@ -52,7 +60,8 @@ function main()
     mapChar::Matrix{Char} = map_to_matrix("$filename.map")
     # Transform a Char matrix into a matrix of vertices, corresponding to the graph of the map
     mapInt::Matrix{Int64} = map_to_int(mapChar)
-    parents, visited_nodes = astar(mapInt, start_x, start_y, finish_x, finish_y)
+
+    @time parents, visited_nodes = astar(mapInt, start_x, start_y, finish_x, finish_y)
     path::Vector{Tuple{Int64, Int64}} = path_creation(parents, start_x, start_y, finish_x, finish_y)
 
     img_test = map_to_img(mapChar)

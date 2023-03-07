@@ -69,3 +69,5 @@ end
 function alphamap_to_classic(map::Matrix{Char})
     return [alpha_to_classic[map[i, j]] for i in 1:size(map,1), j in 1:size(map,2)]
 end
+
+
