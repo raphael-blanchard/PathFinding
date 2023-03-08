@@ -10,6 +10,18 @@ end
 # Function that updates the distance values of the neighbouring node at index (i, j)
 function update_distances_astar(distances::Matrix{Int64}, uncovered_nodes::Matrix{Bool}, graph::Matrix{Int64}, i::Int64, j::Int64, finish_x::Int64, finish_y::Int64, parents::Matrix{Tuple{Int64, Int64}}, pq::PriorityQueue{Tuple{Int64, Int64}, Int64}, node_count::Int64, visited_nodes::Matrix{Bool})
     count = 0
+
+    # left neighbour
+    if j-1 >= 1 && graph[i, j-1] > 0 && uncovered_nodes[i, j-1] == false && distances[i, j-1] > distances[i, j] + graph[i, j-1]
+        parents[i, j-1] = (i, j)
+        distances[i, j-1] = distances[i, j] + graph[i, j-1]
+
+        push!(pq, (i, j-1) => distances[i, j-1] + heuristic(i, j-1, finish_x, finish_y))
+        # pq[(i, j-1)] = distances[i, j-1] + heuristic(i, j-1, finish_x, finish_y)
+        count += 1
+        visited_nodes[i, j-1] = true
+    end
+
     # top neighbour
     if i-1 >= 1 && graph[i-1, j] > 0 && uncovered_nodes[i-1, j] == false && distances[i-1, j] > distances[i, j] + graph[i-1, j]
         # Set the parent of point (i-1, j) to (i, j)
@@ -23,16 +35,6 @@ function update_distances_astar(distances::Matrix{Int64}, uncovered_nodes::Matri
         visited_nodes[i-1, j] = true
     end
 
-    # left neighbour
-    if j-1 >= 1 && graph[i, j-1] > 0 && uncovered_nodes[i, j-1] == false && distances[i, j-1] > distances[i, j] + graph[i, j-1]
-        parents[i, j-1] = (i, j)
-        distances[i, j-1] = distances[i, j] + graph[i, j-1]
-
-        push!(pq, (i, j-1) => distances[i, j-1] + heuristic(i, j-1, finish_x, finish_y))
-        # pq[(i, j-1)] = distances[i, j-1] + heuristic(i, j-1, finish_x, finish_y)
-        count += 1
-        visited_nodes[i, j-1] = true
-    end
     # right neighbour
     if j+1 <= size(graph,2) && graph[i, j+1] > 0 && uncovered_nodes[i, j+1] == false && distances[i, j+1] > distances[i, j] + graph[i, j+1]
         parents[i, j+1] = (i, j)
@@ -43,6 +45,7 @@ function update_distances_astar(distances::Matrix{Int64}, uncovered_nodes::Matri
         count += 1
         visited_nodes[i, j+1] = true
     end
+
     # bottom neighbour
     if i+1 <= size(graph,1) && graph[i+1, j] > 0 && uncovered_nodes[i+1, j] == false && distances[i+1, j] > distances[i, j] + graph[i+1, j]
         parents[i+1, j] = (i, j)
@@ -81,11 +84,9 @@ function astar(graph::Matrix{Int64}, start_x::Int64, start_y::Int64, finish_x::I
     # Number of visited states
     node_count::Int64 = 1
 
-    # # Visited nodes
-    # visited_nodes::Vector{Tuple{Int64, Int64}} = [(start_x, start_y)]
+    # Visited nodes
     visited_nodes::Matrix{Bool} = [false for i in 1:size(graph, 1), j in 1:size(graph,2)]
     
-
     # Infinite distance between the start and other nodes for now
     distances = initMat(graph, start_x, start_y)
 
@@ -98,7 +99,6 @@ function astar(graph::Matrix{Int64}, start_x::Int64, start_y::Int64, finish_x::I
 
     # arbitrary value
     min_x, min_y = 1, 1
-    # (83, 154)
     
     pq::PriorityQueue{Tuple{Int64, Int64}, Int64} = PriorityQueue()
     enqueue!(pq, (start_x, start_y), 0)

@@ -52,22 +52,37 @@ end
 #     println("(", path[1].x, ", ", path[1].y, ")")
 # end
 
-# # function needed to transform a terrain map to a normal map
-# alpha_to_classic::Dict{Char, Char} = Dict(
-#     'B' => 'W',
-#     'C' => 'W',
-#     'D' => 'S',
-#     'E' => 'T',
-#     'K' => '@',
-#     'P' => '.',
-#     'F' => 'S',
-#     'N' => 'S',
-#     'M' => 'S',
-#     'I' => 'S',
-# )
+# function needed to transform a terrain map to a normal map
+alpha_to_classic::Dict{Char, Char} = Dict(
+    'B' => 'W',
+    'C' => 'W',
+    'D' => 'S',
+    'E' => 'T',
+    'K' => '@',
+    'P' => '.',
+    'F' => 'S',
+    'N' => 'S',
+    'M' => 'S',
+    'I' => 'S',
+    'G' => 'T',
+    'O' => 'T',
+    'A' => '.'
+)
 
 function alphamap_to_classic(map::Matrix{Char})
     return [alpha_to_classic[map[i, j]] for i in 1:size(map,1), j in 1:size(map,2)]
 end
 
+
+function main2()
+    filename::String = "Map8"
+    mapChar::Matrix{Char} = map_to_matrix("$filename.map")
+    mapChar = alphamap_to_classic(mapChar)
+    # Transform a Char matrix into a matrix of vertices, corresponding to the graph of the map
+    mapInt::Matrix{Int64} = map_to_int(mapChar)
+    img_test = map_to_img(mapChar)
+    save("../dat/Results/$filename.png", colorview(RGB, img_test))
+
+
+end
 

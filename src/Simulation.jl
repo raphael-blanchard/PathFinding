@@ -2,6 +2,7 @@
 
 # Libraries
 using Images
+using PyPlot
 # Files used
 include("helpers.jl")
 
@@ -23,6 +24,17 @@ function map_to_img(map::Matrix{Char})
         end
     end
     return imgMat
+end
+
+function reshape_to_plotable_map(imgMat::Array{Float64, 3})
+    println(size(imgMat,2), size(imgMat,3))
+    img = Array{Float64, 3}(undef, size(imgMat,2), size(imgMat,3), 3)
+    for i in 1:size(imgMat,2)
+        for j in 1:size(imgMat,3)
+            img[i, j, :] = imgMat[:, i, j]
+        end
+    end
+    return img
 end
 
 # function that draws a given path on the image
@@ -68,7 +80,8 @@ function main()
     draw_visited(img_test, visited_nodes)
     draw_path(img_test, path, start_x, start_y, finish_x, finish_y)
 
-    save("../dat/Results/$filename2.png", colorview(RGB, img_test))
+    # save("../dat/Results/$filename.png", colorview(RGB, img_test))
     # print_path(path)
     println("Done!")
+    imshow(reshape_to_plotable_map(img_test))
 end
