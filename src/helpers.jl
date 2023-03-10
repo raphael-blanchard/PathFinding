@@ -15,7 +15,7 @@ cost::Dict{Char, Int64} = Dict(
 
 # function that takes as input a .map file and returns the corresponding Char matrix
 function map_to_matrix(filename)
-    open("../dat/Maps/$filename") do f
+    open("./dat/Maps/$filename") do f
         # Case if the text file isn't a map
         if readline(f) != "type octile" return "Not a map" end
 
@@ -43,15 +43,6 @@ function map_to_matrix(filename)
     end
 end
 
-# # function printing the given path
-# function print_path(path::Vector{Coordinate})
-#     println("Path from (", path[1].x, ", ", path[1].y, ") to (", path[length(path)].x, ", ", path[length(path)].y, "):")
-#     for i in length(path):-1:2
-#         print("(", path[i].x, ", ", path[i].y, ") -> ")
-#     end
-#     println("(", path[1].x, ", ", path[1].y, ")")
-# end
-
 # function needed to transform a terrain map to a normal map
 alpha_to_classic::Dict{Char, Char} = Dict(
     'B' => 'W',
@@ -69,6 +60,7 @@ alpha_to_classic::Dict{Char, Char} = Dict(
     'A' => '.'
 )
 
+# function that will transform an Alphabet map to our maps
 function alphamap_to_classic(map::Matrix{Char})
     return [alpha_to_classic[map[i, j]] for i in 1:size(map,1), j in 1:size(map,2)]
 end
@@ -82,7 +74,5 @@ function main2()
     mapInt::Matrix{Int64} = map_to_int(mapChar)
     img_test = map_to_img(mapChar)
     save("../dat/Results/$filename.png", colorview(RGB, img_test))
-
-
 end
 
