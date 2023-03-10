@@ -67,37 +67,78 @@ end
 
 # given image is a plotable map
 function show_slowly(imgMat::Array{Float64, 3}, visited_nodes::Vector{Tuple{Int64, Int64}})
-    for i in length(visited_nodes):-1:1
+    for i in 1:length(visited_nodes)
         curr_x, curr_y = visited_nodes[i]
         imgMat[curr_x, curr_y, :] = [1.0  0.788235  0.129412]
         imshow(imgMat)
+        sleep(0.0000001)
     end
 end
 
-function main()
-    filename::String = "Expedition"
-    filename2::String = "ExpeditionAstar"
+function algoDijkstra(fname::String, D::Tuple{Int64, Int64}, A::Tuple{Int64, Int64})
+    println("Beginning of Dijkstra algorithm:\n")
+    d_x::Int64, d_y::Int64 = D
+    a_x::Int64, a_y::Int64 = A
 
-    start_x::Int64, start_y::Int64, finish_x::Int64, finish_y::Int64 = 80, 150, 853, 926
     # Transform the .map file into a matrix of Char
-    mapChar::Matrix{Char} = map_to_matrix("$filename.map")
-    # Transform a Char matrix into a matrix of vertices, corresponding to the graph of the map
-    mapInt::Matrix{Int64} = map_to_int(mapChar)
+    mapChar::Matrix{Char} = map_to_matrix("$fname")
 
-    # println("Dijkstra")
-    # @time parents, visited_nodes = dijkstra(mapInt, start_x, start_y, finish_x, finish_y)
-    println("A*")
-    @time parents, visited_nodes = astar(mapInt, start_x, start_y, finish_x, finish_y)
+    # Transform the Char matrix into the matrix of costs
+    costMap::Matrix{Int64} = map_to_int(mapChar)
 
-    path::Vector{Tuple{Int64, Int64}} = path_creation(parents, start_x, start_y, finish_x, finish_y)
+    # performing the dijkstra algorithm to find the shortest path
+    @time parents, visited_nodes = dijkstra(costMap, d_x, d_y, a_x, a_y)
 
-    img_test = map_to_img(mapChar)
-    draw_visited(img_test, visited_nodes)
-    draw_path(img_test, path, start_x, start_y, finish_x, finish_y)
+    # Forming the path taken from the parents matrix
+    path::Vector{Tuple{Int64, Int64}} = path_creation(parents, d_x, d_y, a_x, a_y)
 
+    # Transforming the matrix of Chars into a "Matrix" of RGB channels
+    mapImg::Array{Float64, 3} = map_to_img(mapChar)
+
+    # drawing on the map the visited points
+    draw_visited(mapImg, visited_nodes)
+    # drawing on the map the path taken 
+    draw_path(mapImg, path, d_x, d_y, a_x, a_y)
+
+    imshow(reshape_to_plotable_map(mapImg))
+
+    println("All done for Dijkstra!")
+end
+
+function algoAstar(fname::String, D::Tuple{Int64, Int64}, A::Tuple{Int64, Int64})
+    println("Beginning of Astar algorithm:\n")
+    d_x::Int64, d_y::Int64 = D
+    a_x::Int64, a_y::Int64 = A
+
+    # Transform the .map file into a matrix of Char
+    mapChar::Matrix{Char} = map_to_matrix("$fname")
+
+    # Transform the Char matrix into the matrix of costs
+    costMap::Matrix{Int64} = map_to_int(mapChar)
+
+    # performing the dijkstra algorithm to find the shortest path
+    @time parents, visited_nodes = astar(costMap, d_x, d_y, a_x, a_y)
+
+    # Forming the path taken from the parents matrix
+    path::Vector{Tuple{Int64, Int64}} = path_creation(parents, d_x, d_y, a_x, a_y)
+
+    # Transforming the matrix of Chars into a "Matrix" of RGB channels
+    mapImg::Array{Float64, 3} = map_to_img(mapChar)
+
+    # drawing on the map the visited points
+    draw_visited(mapImg, visited_nodes)
+    # drawing on the map the path taken 
+    draw_path(mapImg, path, d_x, d_y, a_x, a_y)
+
+    imshow(reshape_to_plotable_map(mapImg))
+    axis("off")
+
+    println("All done for Astar!")
+end
+
+function main()
     # save("../dat/Results/$filename.png", colorview(RGB, img_test))
-    # print_path(path)
-    println("Done!")
-    # imshow(reshape_to_plotable_map(img_test))
-    # show_slowly(test, visited_nodes)
+
+    algoDijkstra("Expedition.map", (80, 150), (853, 926))
+    algoAstar("Expedition.map", (80, 150), (853, 926))
 end

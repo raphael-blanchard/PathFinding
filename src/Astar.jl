@@ -74,11 +74,11 @@ function heuristic(curr_x::Int64, curr_y::Int64, finish_x::Int64, finish_y::Int6
     return abs(curr_x - finish_x) + abs(curr_y - finish_y)
 end
 
-function initMat(graph::Matrix{Int64}, start_x::Int64, start_y::Int64)
-    distances::Matrix{Int64} = fill(99999999, size(graph,1), size(graph,2))
-    distances[start_x, start_y] = 0
-    return distances
-end
+# function initMat(graph::Matrix{Int64}, start_x::Int64, start_y::Int64)
+#     distances::Matrix{Int64} = fill(99999999, size(graph,1), size(graph,2))
+#     distances[start_x, start_y] = 0
+#     return distances
+# end
 
 function astar(graph::Matrix{Int64}, start_x::Int64, start_y::Int64, finish_x::Int64, finish_y::Int64)
     # Number of visited states
@@ -88,7 +88,8 @@ function astar(graph::Matrix{Int64}, start_x::Int64, start_y::Int64, finish_x::I
     visited_nodes::Matrix{Bool} = [false for i in 1:size(graph, 1), j in 1:size(graph,2)]
     
     # Infinite distance between the start and other nodes for now
-    distances = initMat(graph, start_x, start_y)
+    distances::Matrix{Int64} = fill(99999999, size(graph,1), size(graph,2))
+    distances[start_x, start_y] = 0
 
     # None of the nodes have been visited at the beginning
     uncovered_nodes::Matrix{Bool} = [false for i in 1:size(graph,1), j in 1:size(graph,2)]
