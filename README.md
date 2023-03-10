@@ -8,7 +8,8 @@ Path found with Dijkstra (left) and A* using the Manhattan distance (right):
   <img src="https://user-images.githubusercontent.com/86181145/222896324-29b188d6-a9ea-4a2d-9bc8-e1fbb39604e9.png" width="49%" height="49%">
 </p>
 
-## 
+## Getting started
+
 Update:
 As we are working on finding a path on a map, using the general way of using dijkstra with matrices wouldn't be efficient.
 For example, a 3x3 map contains 9 pixels and each pixels can either go left, right, top or bottom, so there are only 4 possibles vertices to each node.

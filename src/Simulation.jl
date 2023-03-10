@@ -58,18 +58,34 @@ function draw_visited(imgMat::Array{Float64, 3}, visited_nodes::Matrix{Bool})
     end
 end
 
+# function draw_visited(imgMat::Array{Float64, 3}, visited_nodes::Vector{Tuple{Int64, Int64}})
+#     for i in length(visited_nodes):-1:1
+#         curr_x, curr_y = visited_nodes[i]
+#         imgMat[:, curr_x, curr_y] = [1.0  0.788235  0.129412]
+#     end
+# end
+
+# given image is a plotable map
+function show_slowly(imgMat::Array{Float64, 3}, visited_nodes::Vector{Tuple{Int64, Int64}})
+    for i in length(visited_nodes):-1:1
+        curr_x, curr_y = visited_nodes[i]
+        imgMat[curr_x, curr_y, :] = [1.0  0.788235  0.129412]
+        imshow(imgMat)
+    end
+end
+
 function main()
-    filename::String = "theglaive"
+    filename::String = "Expedition"
     filename2::String = "ExpeditionAstar"
 
-    start_x::Int64, start_y::Int64, finish_x::Int64, finish_y::Int64 = 91, 73, 442, 354
+    start_x::Int64, start_y::Int64, finish_x::Int64, finish_y::Int64 = 80, 150, 853, 926
     # Transform the .map file into a matrix of Char
     mapChar::Matrix{Char} = map_to_matrix("$filename.map")
     # Transform a Char matrix into a matrix of vertices, corresponding to the graph of the map
     mapInt::Matrix{Int64} = map_to_int(mapChar)
 
-    println("Dijkstra")
-    @time parents, visited_nodes = dijkstra(mapInt, start_x, start_y, finish_x, finish_y)
+    # println("Dijkstra")
+    # @time parents, visited_nodes = dijkstra(mapInt, start_x, start_y, finish_x, finish_y)
     println("A*")
     @time parents, visited_nodes = astar(mapInt, start_x, start_y, finish_x, finish_y)
 
@@ -82,5 +98,6 @@ function main()
     # save("../dat/Results/$filename.png", colorview(RGB, img_test))
     # print_path(path)
     println("Done!")
-    imshow(reshape_to_plotable_map(img_test))
+    # imshow(reshape_to_plotable_map(img_test))
+    # show_slowly(test, visited_nodes)
 end

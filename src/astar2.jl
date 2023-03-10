@@ -8,7 +8,7 @@ function map_to_int(charMat::Matrix{Char})
 end
 
 # Function that updates the distance values of the neighbouring node at index (i, j)
-function update_distances_astar(distances::Matrix{Int64}, uncovered_nodes::Matrix{Bool}, graph::Matrix{Int64}, i::Int64, j::Int64, finish_x::Int64, finish_y::Int64, parents::Matrix{Tuple{Int64, Int64}}, pq::PriorityQueue{Tuple{Int64, Int64}, Int64}, node_count::Int64, visited_nodes::Matrix{Bool})
+function update_distances_astar(distances::Matrix{Int64}, uncovered_nodes::Matrix{Bool}, graph::Matrix{Int64}, i::Int64, j::Int64, finish_x::Int64, finish_y::Int64, parents::Matrix{Tuple{Int64, Int64}}, pq::PriorityQueue{Tuple{Int64, Int64}, Int64}, node_count::Int64, visited_nodes::Vector{Tuple{Int64, Int64}})
     count = 0
 
     # left neighbour
@@ -19,9 +19,9 @@ function update_distances_astar(distances::Matrix{Int64}, uncovered_nodes::Matri
         push!(pq, (i, j-1) => distances[i, j-1] + heuristic(i, j-1, finish_x, finish_y))
         # pq[(i, j-1)] = distances[i, j-1] + heuristic(i, j-1, finish_x, finish_y)
         count += 1
-        visited_nodes[i, j-1] = true
+        push!(visited_nodes, (i, j-1))
     end 
- 
+
     # top neighbour
     if i-1 >= 1 && graph[i-1, j] > 0 && uncovered_nodes[i-1, j] == false && distances[i-1, j] > distances[i, j] + graph[i-1, j]
         # Set the parent of point (i-1, j) to (i, j)
@@ -32,7 +32,7 @@ function update_distances_astar(distances::Matrix{Int64}, uncovered_nodes::Matri
         push!(pq, (i-1, j) => distances[i-1, j] + heuristic(i-1, j, finish_x, finish_y))
         # pq[(i-1, j)] = distances[i-1, j] + heuristic(i-1, j, finish_x, finish_y)
         count += 1
-        visited_nodes[i-1, j] = true
+        push!(visited_nodes, (i-1, j))
     end
 
     # right neighbour
@@ -43,7 +43,7 @@ function update_distances_astar(distances::Matrix{Int64}, uncovered_nodes::Matri
         push!(pq, (i, j+1) => distances[i, j+1] + heuristic(i, j+1, finish_x, finish_y))
         # pq[(i, j+1)] = distances[i, j+1] + heuristic(i, j+1, finish_x, finish_y)
         count += 1
-        visited_nodes[i, j+1] = true
+        push!(visited_nodes, (i, j+1))
     end
 
     # bottom neighbour
@@ -54,7 +54,7 @@ function update_distances_astar(distances::Matrix{Int64}, uncovered_nodes::Matri
         push!(pq, (i+1, j) => distances[i+1, j] + heuristic(i+1, j, finish_x, finish_y))
         # pq[(i+1, j)] = distances[i+1, j] + heuristic(i+1, j, finish_x, finish_y)
         count += 1
-        visited_nodes[i+1, j] = true
+        push!(visited_nodes, (i+1, j))
     end
     return node_count + count
 end
@@ -85,7 +85,7 @@ function astar(graph::Matrix{Int64}, start_x::Int64, start_y::Int64, finish_x::I
     node_count::Int64 = 1
 
     # Visited nodes
-    visited_nodes::Matrix{Bool} = [false for i in 1:size(graph, 1), j in 1:size(graph,2)]
+    visited_nodes::Vector{Tuple{Int64, Int64}} = []
     
     # Infinite distance between the start and other nodes for now
     distances = initMat(graph, start_x, start_y)

@@ -1,6 +1,7 @@
 # Additional file to tweak the simulation except
 include("dijkstra.jl")
 include("astar.jl")
+# include("astar2.jl")
 
 
 cost::Dict{Char, Int64} = Dict(

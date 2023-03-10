@@ -131,19 +131,3 @@ function path_creation(parents::Matrix{Tuple{Int64, Int64}}, start_x::Int64, sta
     return path
 end
 
-
-# Testing
-# function main()
-#     # .T@
-#     # @.@
-#     # TT.
-#     # SHortest path is [1,1] -> [1,2] -> [2,2] -> [3,2] -> [3,3]
-#     # Cost of 12
-
-#     # Find the shortest path to go from top left (1,1) pixel to bottom right pixel (3,3)
-#     start_x::Int64, start_y::Int64, finish_x::Int64, finish_y::Int64 = 1,1,3,3
-
-#     parents = updated_dijkstra(test_graph, start_x, start_y, finish_x, finish_y)
-#     path = path_creation(parents, start_x, start_y, finish_x, finish_y)
-#     return path
-# end
