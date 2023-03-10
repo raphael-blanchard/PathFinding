@@ -101,6 +101,8 @@ function algoDijkstra(fname::String, D::Tuple{Int64, Int64}, A::Tuple{Int64, Int
     draw_path(mapImg, path, d_x, d_y, a_x, a_y)
 
     imshow(reshape_to_plotable_map(mapImg))
+    save("./dat/Results/divideandconquerDijkstra.png", colorview(RGB, mapImg))
+
 
     println("All done for Dijkstra!")
 end
@@ -133,12 +135,14 @@ function algoAstar(fname::String, D::Tuple{Int64, Int64}, A::Tuple{Int64, Int64}
     imshow(reshape_to_plotable_map(mapImg))
     axis("off")
 
+    save("./dat/Results/divideandconquerAstar.png", colorview(RGB, mapImg))
+
     println("All done for Astar!")
 end
 
 function main()
     # save("../dat/Results/$filename.png", colorview(RGB, img_test))
 
-    algoDijkstra("Expedition.map", (80, 150), (853, 926))
-    algoAstar("Expedition.map", (80, 150), (853, 926))
+    algoDijkstra("divideandconquer.map", (49, 64), (450, 450))
+    algoAstar("divideandconquer.map", (49, 64), (450, 450))
 end
