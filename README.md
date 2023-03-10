@@ -24,24 +24,27 @@ where:
 - D and A, respectively the starting and ending points; variables of type Tuple{Int64, Int64} (e.g (12, 14)).
 
 ## Benchmarks
-Here are 2 different benchmarks on 2 different machines on 3 maps:
+Here are benchmarks on 3 maps on 2 different machines (using the algoAstar algorithm only):
 ### (1) - Ryzen 5600X (Windows 10)
-|         filename       |    D    |    A    |  map size | avg. execution time | nb. allocations | allocated (in MiB) | distance | visited states |
+|         filename       |    D    |    A    |  map size | exec. time (in sec) | nb. allocations | allocated (in MiB) | distance | visited states |
 | ---------------------- | ------- | ------- | --------- | ------------------  | --------------- | ------------------ | -------- | -------------- |         
-|        "arena.map"     | (12,12) | (12,12) |   49x49   | Content Cell        |                 |                    | 1561     | 13994248       |
-| "divideandconquer.map" | (12,12) | (12,12) |  512x512  | Content Cell        |                 |                    | 1561     | 13994248       |
-|    "Exepedition.map"   | (12,12) | (12,12) | 1024x1024 | Content Cell        |                 |                    | 1561     | 13994248       |
+|        "arena.map"     | (2, 4)  | (48, 45)|   49x49   | 0.000849   |    65    |    0.119     |  87   | update       |
+| "divideandconquer.map" | (49, 64)|(450, 450)|  512x512 | 0.009027   |    95    |    7.382     | 789   | update       |
+|    "Exepedition.map"   |(80, 150)|(853, 926)| 1024x1024| 0.097860   |    153   |    35.099    | 1561  | update       |
 
 ### (2) - MBP 2019
-|         filename       |    D    |    A    |  map size | avg. execution time | nb. allocations | allocated (in MiB) | distance | visited states |
+|         filename       |    D    |    A    |  map size | exec. time (in sec) | nb. allocations | allocated (in MiB) | distance | visited states |
 | ---------------------- | ------- | ------- | --------- | ------------------  | --------------- | ------------------ | -------- | -------------- |         
-|        "arena.map"     | (12,12) | (12,12) |   49x49   | Content Cell        |                 |                    | 1561     | 13994248       |
-| "divideandconquer.map" | (12,12) | (12,12) |  512x512  | Content Cell        |                 |                    | 1561     | 13994248       |
-|    "Exepedition.map"   | (12,12) | (12,12) | 1024x1024 | Content Cell        |                 |                    | 1561     | 13994248       |
+|        "arena.map"     | (2, 4)  | (48, 45)|   49x49   | 0.000849   |    65    |    0.119     |  87   | update       |
+| "divideandconquer.map" | (49, 64)|(450, 450)|  512x512 | 0.009027   |    95    |    7.382     | 789   | update       |
+|    "Exepedition.map"   |(80, 150)|(853, 926)| 1024x1024| 0.097860   |    153   |    35.099    | 1561  | update       |
 
 ## Examples
-Path found with Dijkstra (left) and A* using the Manhattan distance (right):
+A* using the Manhattan distance (left) and with Dijkstra (right):
 <p float="left">
-  <img src="https://user-images.githubusercontent.com/86181145/222896405-7adad3cb-19c5-406c-90b2-ac16be1110dd.png" width="49%" height="49%">
-  <img src="https://user-images.githubusercontent.com/86181145/222896324-29b188d6-a9ea-4a2d-9bc8-e1fbb39604e9.png" width="49%" height="49%">
+  <img src="https://user-images.githubusercontent.com/86181145/224407166-7d70f280-b687-4e1f-8e57-15514c7d7221.png" width="49%" height="49%">
+  <img src="https://user-images.githubusercontent.com/86181145/224407052-3891dbb5-869f-4c00-8923-b8a29de6014a.png" width="49%" height="49%">
 </p>
+fname = "divideandconquer.map"; D = (49, 64); A = (450, 450)
+
+
