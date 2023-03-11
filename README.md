@@ -28,16 +28,16 @@ Here are benchmarks on 3 maps on 2 different machines (using the algoAstar algor
 ### (1) - Ryzen 5600X (Windows 10)
 |         filename       |    D    |    A    |  map size | exec. time (in sec) | nb. allocations | allocated (in MiB) | distance | visited states |
 | ---------------------- | ------- | ------- | --------- | ------------------  | --------------- | ------------------ | -------- | -------------- |         
-|        "arena.map"     | (2, 4)  | (48, 45)|   49x49   | 0.000849   |    65    |    0.119     |  87   | update       |
-| "divideandconquer.map" | (49, 64)|(450, 450)|  512x512 | 0.009027   |    95    |    7.382     | 789   | update       |
-|    "Exepedition.map"   |(80, 150)|(853, 926)| 1024x1024| 0.097860   |    153   |    35.099    | 1561  | update       |
+|        "arena.map"     | (2, 4)  | (48, 45)|   49x49   | 0.000663   |    65    |    0.119     |  87   | 647       |
+| "divideandconquer.map" | (49, 64)|(450, 450)|  512x512 | 0.005812   |    94    |    7.381     | 789   | 19787        |
+|    "Expedition.map"   |(80, 150)|(853, 926)| 1024x1024| 0.069881    |    147   |    35.099    | 1561  | 258776       |
 
 ### (2) - MBP 2019
 |         filename       |    D    |    A    |  map size | exec. time (in sec) | nb. allocations | allocated (in MiB) | distance | visited states |
 | ---------------------- | ------- | ------- | --------- | ------------------  | --------------- | ------------------ | -------- | -------------- |         
-|        "arena.map"     | (2, 4)  | (48, 45)|   49x49   | 0.000849   |    65    |    0.119     |  87   | update       |
-| "divideandconquer.map" | (49, 64)|(450, 450)|  512x512 | 0.009027   |    95    |    7.382     | 789   | update       |
-|    "Exepedition.map"   |(80, 150)|(853, 926)| 1024x1024| 0.097860   |    153   |    35.099    | 1561  | update       |
+|        "arena.map"     | (2, 4)  | (48, 45)|   49x49   | 0.000849   |    65    |    0.119     |  87   | 647       |
+| "divideandconquer.map" | (49, 64)|(450, 450)|  512x512 | 0.009027   |    95    |    7.382     | 789   | 19787       |
+|    "Expedition.map"   |(80, 150)|(853, 926)| 1024x1024| 0.097860    |    153   |    35.099    | 1561  | 258776       |
 
 ## Examples
 A* using the Manhattan distance (left) and with Dijkstra (right):
