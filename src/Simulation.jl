@@ -100,8 +100,8 @@ function algoDijkstra(fname::String, D::Tuple{Int64, Int64}, A::Tuple{Int64, Int
     # drawing on the map the path taken 
     draw_path(mapImg, path, d_x, d_y, a_x, a_y)
 
-    imshow(reshape_to_plotable_map(mapImg))
-    save("./dat/Results/divideandconquerDijkstra.png", colorview(RGB, mapImg))
+    # imshow(reshape_to_plotable_map(mapImg))
+    # save("./dat/Results/divideandconquerDijkstra.png", colorview(RGB, mapImg))
 
 
     println("All done for Dijkstra!")
@@ -132,10 +132,10 @@ function algoAstar(fname::String, D::Tuple{Int64, Int64}, A::Tuple{Int64, Int64}
     # drawing on the map the path taken 
     draw_path(mapImg, path, d_x, d_y, a_x, a_y)
 
-    imshow(reshape_to_plotable_map(mapImg))
-    axis("off")
+    # imshow(reshape_to_plotable_map(mapImg))
+    # axis("off")
 
-    save("./dat/Results/divideandconquerAstar.png", colorview(RGB, mapImg))
+    # save("./dat/Results/divideandconquerAstar.png", colorview(RGB, mapImg))
 
     println("All done for Astar!")
 end

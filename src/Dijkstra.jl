@@ -18,8 +18,11 @@ function update_distances_dijkstra(distances::Matrix{Int64}, uncovered_nodes::Ma
 
         push!(pq, (i, j-1) => distances[i, j-1])
         # pq[(i, j-1)] = distances[i, j-1] + heuristic(i, j-1, finish_x, finish_y)
-        count += 1
-        visited_nodes[i, j-1] = true
+        if visited_nodes[i, j-1] == false
+            visited_nodes[i, j-1] = true
+            # Counting only the first time a node has been visited 
+            count += 1
+        end
     end
 
     # top neighbour
@@ -31,8 +34,10 @@ function update_distances_dijkstra(distances::Matrix{Int64}, uncovered_nodes::Ma
     
         push!(pq, (i-1, j) => distances[i-1, j])
         # pq[(i-1, j)] = distances[i-1, j] + heuristic(i-1, j, finish_x, finish_y)
-        count += 1
-        visited_nodes[i-1, j] = true
+        if visited_nodes[i-1, j] == false
+            visited_nodes[i-1, j] = true
+            count += 1
+        end
     end
 
     # right neighbour
@@ -42,8 +47,10 @@ function update_distances_dijkstra(distances::Matrix{Int64}, uncovered_nodes::Ma
 
         push!(pq, (i, j+1) => distances[i, j+1])
         # pq[(i, j+1)] = distances[i, j+1] + heuristic(i, j+1, finish_x, finish_y)
-        count += 1
-        visited_nodes[i, j+1] = true
+        if visited_nodes[i, j+1] == false
+            visited_nodes[i, j+1] = true
+            count += 1
+        end
     end
 
     # bottom neighbour
@@ -53,8 +60,10 @@ function update_distances_dijkstra(distances::Matrix{Int64}, uncovered_nodes::Ma
 
         push!(pq, (i+1, j) => distances[i+1, j])
         # pq[(i+1, j)] = distances[i+1, j] + heuristic(i+1, j, finish_x, finish_y)
-        count += 1
-        visited_nodes[i+1, j] = true
+        if visited_nodes[i+1, j] == false
+            visited_nodes[i+1, j] = true
+            count += 1
+        end
     end
     return node_count + count
 end
