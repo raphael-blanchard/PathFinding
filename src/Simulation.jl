@@ -76,7 +76,7 @@ function show_slowly(imgMat::Array{Float64, 3}, visited_nodes::Vector{Tuple{Int6
 end
 
 function algoDijkstra(fname::String, D::Tuple{Int64, Int64}, A::Tuple{Int64, Int64})
-    println("Beginning of Dijkstra algorithm:\n")
+    println("\nBeginning of Dijkstra algorithm:")
     d_x::Int64, d_y::Int64 = D
     a_x::Int64, a_y::Int64 = A
 
@@ -100,15 +100,16 @@ function algoDijkstra(fname::String, D::Tuple{Int64, Int64}, A::Tuple{Int64, Int
     # drawing on the map the path taken 
     draw_path(mapImg, path, d_x, d_y, a_x, a_y)
 
-    # imshow(reshape_to_plotable_map(mapImg))
-    # save("./dat/Results/divideandconquerDijkstra.png", colorview(RGB, mapImg))
+    imshow(reshape_to_plotable_map(mapImg))
 
+    # # uncomment the following line if you want to save the image as a png
+    # save("./dat/Results/yourfile.png", colorview(RGB, mapImg))
 
     println("All done for Dijkstra!")
 end
 
 function algoAstar(fname::String, D::Tuple{Int64, Int64}, A::Tuple{Int64, Int64})
-    println("Beginning of Astar algorithm:\n")
+    println("\nBeginning of Astar algorithm:")
     d_x::Int64, d_y::Int64 = D
     a_x::Int64, a_y::Int64 = A
 
@@ -118,7 +119,7 @@ function algoAstar(fname::String, D::Tuple{Int64, Int64}, A::Tuple{Int64, Int64}
     # Transform the Char matrix into the matrix of costs
     costMap::Matrix{Int64} = map_to_int(mapChar)
 
-    # performing the dijkstra algorithm to find the shortest path
+    # performing the Astar algorithm to find the shortest path
     @time parents, visited_nodes = astar(costMap, d_x, d_y, a_x, a_y)
 
     # Forming the path taken from the parents matrix
@@ -132,17 +133,17 @@ function algoAstar(fname::String, D::Tuple{Int64, Int64}, A::Tuple{Int64, Int64}
     # drawing on the map the path taken 
     draw_path(mapImg, path, d_x, d_y, a_x, a_y)
 
-    # imshow(reshape_to_plotable_map(mapImg))
+    # line to plot the map
+    imshow(reshape_to_plotable_map(mapImg))
     # axis("off")
 
-    # save("./dat/Results/divideandconquerAstar.png", colorview(RGB, mapImg))
+    # # uncomment the following line if you want to save the image as a png
+    # save("./dat/Results/yourfile.png", colorview(RGB, mapImg))
 
     println("All done for Astar!")
 end
 
 function main()
-    # save("../dat/Results/$filename.png", colorview(RGB, img_test))
-
-    algoDijkstra("divideandconquer.map", (49, 64), (450, 450))
-    algoAstar("divideandconquer.map", (49, 64), (450, 450))
+    algoDijkstra("Expedition.map", (80, 150), (853, 926))
+    algoAstar("Expedition.map", (80, 150), (853, 926))
 end

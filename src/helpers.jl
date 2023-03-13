@@ -1,6 +1,5 @@
-# Additional file to tweak the simulation except
+# File containing the map parser and the costs to get to a point
 include("dijkstra.jl")
-# include("astar.jl")
 include("astar.jl")
 
 
@@ -44,7 +43,7 @@ function map_to_matrix(filename)
     end
 end
 
-# function needed to transform a terrain map to a normal map
+# dict needed to transform a terrain map to a normal map
 alpha_to_classic::Dict{Char, Char} = Dict(
     'B' => 'W',
     'C' => 'W',
@@ -67,13 +66,4 @@ function alphamap_to_classic(map::Matrix{Char})
 end
 
 
-function main2()
-    filename::String = "Map8"
-    mapChar::Matrix{Char} = map_to_matrix("$filename.map")
-    mapChar = alphamap_to_classic(mapChar)
-    # Transform a Char matrix into a matrix of vertices, corresponding to the graph of the map
-    mapInt::Matrix{Int64} = map_to_int(mapChar)
-    img_test = map_to_img(mapChar)
-    save("../dat/Results/$filename.png", colorview(RGB, img_test))
-end
 

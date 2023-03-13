@@ -119,7 +119,7 @@ function dijkstra(graph::Matrix{Int64}, start_x::Int64, start_y::Int64, finish_x
         # marking the node we just worked around as visited
         uncovered_nodes[min_x, min_y] = true
     end
-    println("Distance from vertex (",start_x, ", ", start_y, ") to vertex (", finish_x, ", ", finish_y, "): ", distances[finish_x, finish_y])
+    println("Distance from point (",start_x, ", ", start_y, ") to point (", finish_x, ", ", finish_y, "): ", distances[finish_x, finish_y])
     
     # println("Path from (",start_x, ", ", start_y, ") to (", finish_x, ", ", finish_y, "):")
     # # printing path from start to end
