@@ -24,20 +24,22 @@ where:
 - D and A, respectively the starting and ending points; variables of type Tuple{Int64, Int64} (e.g (12, 14)).
 
 ## Benchmarks
-Here are benchmarks on 3 maps on 2 different machines (using the algoAstar algorithm only):
-### (1) - Ryzen 5600X (Windows 10)
+Here are benchmarks on 3 maps using 2 different algorithms:
+(Images are under the tables)
+### (1) - A* with Manhattan Distance
 |         filename       |    D    |    A    |  map size | exec. time (in sec) | nb. allocations | allocated (in MiB) | distance | visited states |
 | ---------------------- | ------- | ------- | --------- | ------------------  | --------------- | ------------------ | -------- | -------------- |         
 |        "arena.map"     | (2, 4)  | (48, 45)|   49x49   | 0.000663   |    65    |    0.119     |  87   | 647       |
 | "divideandconquer.map" | (49, 64)|(450, 450)|  512x512 | 0.005812   |    94    |    7.381     | 789   | 19787        |
 |    "Expedition.map"   |(80, 150)|(853, 926)| 1024x1024| 0.069881    |    147   |    35.099    | 1561  | 258776       |
 
-### (2) - MBP 2019
+### (2) - Dijkstra
 |         filename       |    D    |    A    |  map size | exec. time (in sec) | nb. allocations | allocated (in MiB) | distance | visited states |
 | ---------------------- | ------- | ------- | --------- | ------------------  | --------------- | ------------------ | -------- | -------------- |         
-|        "arena.map"     | (2, 4)  | (48, 45)|   49x49   | 0.000849   |    65    |    0.119     |  87   | 647       |
-| "divideandconquer.map" | (49, 64)|(450, 450)|  512x512 | 0.009027   |    95    |    7.382     | 789   | 19787       |
-|    "Expedition.map"   |(80, 150)|(853, 926)| 1024x1024| 0.097860    |    153   |    35.099    | 1561  | 258776       |
+|        "arena.map"     | (2, 4)  | (48, 45)|   49x49   | 0.000889   |    107    |    0.140     |  87   | 2052       |
+| "divideandconquer.map" | (49, 64)|(450, 450)|  512x512 | 0.033913   |    507    |    10.896     | 789   | 134798       |
+|    "Expedition.map"   |(80, 150)|(853, 926)| 1024x1024| 0.166135    |    1.41 k |    46.274    | 1561  | 632718       |
+
 
 ## Examples
 A* using the Manhattan distance (left) and with Dijkstra (right):
