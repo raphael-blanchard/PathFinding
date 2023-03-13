@@ -1,6 +1,20 @@
 # PathFinding
 Implementation and optimization of pathfinding algorithms in Julia for standardized maps available [here](https://movingai.com/benchmarks/grids.html).
 
+## Installation
+[<img src="https://img.shields.io/badge/Julia-1.8.5-purple">](https://img.shields.io/badge/Julia-1.8.5-purple)
+[<img src="https://img.shields.io/badge/DataStructures-v0.18.13-red">](https://img.shields.io/badge/DataStructures-v0.18.13-red)
+[<img src="https://img.shields.io/badge/PyPlot-v2.11.0-blue">](https://img.shields.io/badge/PyPlot-v2.11.0-blue)
+[<img src="https://img.shields.io/badge/Images-v0.25.2-brightgreen">](https://img.shields.io/badge/Images-v0.25.2-brightgreen)
+
+```bash
+git clone https://github.com/raphael-blanchard/PathFinding.git
+```
+Change your current directory to the parent folder of the project by doing
+```bash
+cd PathFinding
+```
+(If you downloaded the project as a zip, the parent folder will be called PathFinding-main)
 
 ## Getting Started
 Download the necessary packages by running the following command in the Julia REPL Pkg mode:
