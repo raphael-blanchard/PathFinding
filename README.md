@@ -2,10 +2,10 @@
 Implementation and optimization of pathfinding algorithms in Julia for standardized maps available [here](https://movingai.com/benchmarks/grids.html).
 
 ## Installation
-[<img src="https://img.shields.io/badge/Julia-1.8.5-purple">](https://img.shields.io/badge/Julia-1.8.5-purple)
-[<img src="https://img.shields.io/badge/DataStructures-v0.18.13-red">](https://img.shields.io/badge/DataStructures-v0.18.13-red)
-[<img src="https://img.shields.io/badge/PyPlot-v2.11.0-blue">](https://img.shields.io/badge/PyPlot-v2.11.0-blue)
-[<img src="https://img.shields.io/badge/Images-v0.25.2-brightgreen">](https://img.shields.io/badge/Images-v0.25.2-brightgreen)
+[<img src="https://img.shields.io/badge/Julia-1.8.5-purple">](https://julialang.org/downloads/)
+[<img src="https://img.shields.io/badge/DataStructures-v0.18.13-red">](https://github.com/JuliaCollections/DataStructures.jl)
+[<img src="https://img.shields.io/badge/PyPlot-v2.11.0-blue">](https://github.com/JuliaPy/PyPlot.jl)
+[<img src="https://img.shields.io/badge/Images-v0.25.2-brightgreen">](https://github.com/JuliaImages/Images.jl)
 
 ```bash
 git clone https://github.com/raphael-blanchard/PathFinding.git
@@ -17,7 +17,7 @@ cd PathFinding
 (If you downloaded the project as a zip, the parent folder will be called PathFinding-main)
 
 ## Getting Started
-Download the necessary packages by running the following command in the Julia REPL Pkg mode:
+When in the Julia REPL, download the necessary packages by running the following command in the Pkg mode:
 
 ```julia
 add DataStructures, PyPlot, Images
@@ -27,7 +27,7 @@ Including this file will take care of anything that needs to be precompiled to m
 ```julia
 include("./src/simulation.jl")
 ```
-Execute the algorithms by doing:
+You can now use A* and/or Dijkstra to find the shortest path between two points in a given map by doing:
 
 ```julia
 algoDijkstra(fname, D, A)
@@ -56,11 +56,27 @@ Here are benchmarks on 3 maps using 2 different algorithms:
 
 
 ## Examples
-A* using the Manhattan distance (left) and with Dijkstra (right):
+A* on the left, Dijkstra on the right.
+The orange pixels correspond to the visited points of the map.
+
+fname = "arena.map"; D = (2, 4); A = (48, 45)
+<p float="left">
+  <img src="https://user-images.githubusercontent.com/86181145/224813595-d63ece4a-3950-4e8f-84fe-28151eb33717.png" width="8%" height="8%">
+  <img src="https://user-images.githubusercontent.com/86181145/224813609-81ff7e1c-fb09-466c-8540-33ecd3e21065.png" width="8%" height="8%">
+</p>
+
+fname = "divideandconquer.map"; D = (49, 64); A = (450, 450)
 <p float="left">
   <img src="https://user-images.githubusercontent.com/86181145/224407166-7d70f280-b687-4e1f-8e57-15514c7d7221.png" width="49%" height="49%">
   <img src="https://user-images.githubusercontent.com/86181145/224407052-3891dbb5-869f-4c00-8923-b8a29de6014a.png" width="49%" height="49%">
 </p>
-fname = "divideandconquer.map"; D = (49, 64); A = (450, 450)
+
+fname = "Expedition.map"; D = (80, 150); A = (853, 926)
+<p float="left">
+  <img src="https://user-images.githubusercontent.com/86181145/224814376-6a40fe64-0b4d-4e10-8057-2fe4e969a401.png" width="49%" height="49%">
+  <img src="https://user-images.githubusercontent.com/86181145/224814420-84444fcc-f868-4d17-ba50-3c32b5d8cdab.png" width="49%" height="49%">
+</p>
+
+
 
 
