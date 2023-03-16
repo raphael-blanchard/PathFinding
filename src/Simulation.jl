@@ -144,6 +144,6 @@ function algoAstar(fname::String, D::Tuple{Int64, Int64}, A::Tuple{Int64, Int64}
 end
 
 function main()
-    algoDijkstra("Expedition.map", (80, 150), (853, 926))
+    # algoDijkstra("Expedition.map", (80, 150), (853, 926))
     algoAstar("Expedition.map", (80, 150), (853, 926))
 end
