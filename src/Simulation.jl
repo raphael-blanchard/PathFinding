@@ -134,16 +134,66 @@ function algoAstar(fname::String, D::Tuple{Int64, Int64}, A::Tuple{Int64, Int64}
     draw_path(mapImg, path, d_x, d_y, a_x, a_y)
 
     # line to plot the map
-    imshow(reshape_to_plotable_map(mapImg))
+    # imshow(reshape_to_plotable_map(mapImg))
     # axis("off")
 
     # # uncomment the following line if you want to save the image as a png
-    # save("./dat/Results/yourfile.png", colorview(RGB, mapImg))
+    save("./dat/Results/arena_Astar.png", colorview(RGB, mapImg))
+
+    println("All done for Astar!")
+end
+
+function weighted_AstarDXP(weight::Float64, fname::String, D::Tuple{Int64, Int64}, A::Tuple{Int64, Int64})
+    println("\nBeginning of Weighted Astar algorithm:")
+    println("Weight = ", weight)
+    d_x::Int64, d_y::Int64 = D
+    a_x::Int64, a_y::Int64 = A
+
+    # Transform the .map file into a matrix of Char
+    mapChar::Matrix{Char} = map_to_matrix("$fname")
+
+    # Transform the Char matrix into the matrix of costs
+    costMap::Matrix{Int64} = map_to_int(mapChar)
+
+    # performing the Astar algorithm to find the shortest path
+    @time parents, visited_nodes = WastarXDP(weight, costMap, d_x, d_y, a_x, a_y)
+
+    # Forming the path taken from the parents matrix
+    path::Vector{Tuple{Int64, Int64}} = path_creation(parents, d_x, d_y, a_x, a_y)
+
+    # Transforming the matrix of Chars into a "Matrix" of RGB channels
+    mapImg::Array{Float64, 3} = map_to_img(mapChar)
+
+    # drawing on the map the visited points
+    draw_visited(mapImg, visited_nodes)
+    # drawing on the map the path taken 
+    draw_path(mapImg, path, d_x, d_y, a_x, a_y)
+
+    # line to plot the map
+    imshow(reshape_to_plotable_map(mapImg))
+    axis("off")
+
+    # # uncomment the following line if you want to save the image as a png
+    save("./dat/Results/arena_WA10.png", colorview(RGB, mapImg))
 
     println("All done for Astar!")
 end
 
 function main()
     # algoDijkstra("Expedition.map", (80, 150), (853, 926))
-    algoAstar("Expedition.map", (80, 150), (853, 926))
+
+    weighted_Astar(10.0, "arena.map", (2, 4), (48, 45))
+    algoAstar("arena.map", (2, 4), (48, 45))
+    # weighted_Astar(12.3, "Expedition.map", (80, 150), (853, 926))
+    # weighted_Astar(10.0, "Expedition.map", (80, 150), (853, 926))
+    # algoAstar("Expedition.map", (80, 150), (853, 926))
+    # weighted_Astar(12.3, "maze512-1-8.map", (80, 150), (450, 450))
+    # weighted_Astar(10.0, "maze512-1-8.map", (80, 150), (450, 450))
+    # algoAstar("maze512-1-8.map", (80, 150), (450, 450))
+
+    # algoAstar("arena.map", (2, 4), (48, 45))
 end
+
+
+# file:///C:/Users/rapha/Downloads/18558-Article%20Text-22077-1-2-20210721.pdf
+# paper on randomized weights

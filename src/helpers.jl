@@ -1,6 +1,7 @@
 # File containing the map parser and the costs to get to a point
 include("dijkstra.jl")
 include("astar.jl")
+include("weighted_astar.jl")
 
 
 cost::Dict{Char, Int64} = Dict(

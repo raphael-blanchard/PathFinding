@@ -8,7 +8,7 @@ function map_to_int(charMat::Matrix{Char})
 end
 
 # Function that updates the distance values of the neighbouring node at index (i, j)
-function update_distances_astar(distances::Matrix{Int64}, uncovered_nodes::Matrix{Bool}, graph::Matrix{Int64}, i::Int64, j::Int64, finish_x::Int64, finish_y::Int64, parents::Matrix{Tuple{Int64, Int64}}, pq::PriorityQueue{Tuple{Int64, Int64}, Float64}, node_count::Int64, visited_nodes::Matrix{Bool})
+function update_distances_astarXDP(weight::Float64, distances::Matrix{Int64}, uncovered_nodes::Matrix{Bool}, graph::Matrix{Int64}, i::Int64, j::Int64, finish_x::Int64, finish_y::Int64, parents::Matrix{Tuple{Int64, Int64}}, pq::PriorityQueue{Tuple{Int64, Int64}, Float64}, node_count::Int64, visited_nodes::Matrix{Bool})
     count = 0
 
     # left neighbour
@@ -16,7 +16,9 @@ function update_distances_astar(distances::Matrix{Int64}, uncovered_nodes::Matri
         parents[i, j-1] = (i, j)
         distances[i, j-1] = distances[i, j] + graph[i, j-1]
 
-        push!(pq, (i, j-1) => distances[i, j-1] + 1.2*heuristic(i, j-1, finish_x, finish_y))
+        # push!(pq, (i, j-1) => distances[i, j-1] + weight*heuristic(i, j-1, finish_x, finish_y))
+        # XDP
+        push!(pq, (i, j-1) => (1/(2*weight))*(distances[i, j-1] + (2*weight - 1)*heuristic(i, j-1, finish_x, finish_y) + sqrt((distances[i, j-1] - heuristic(i, j-1, finish_x, finish_y))^2 + 4*distances[i, j-1]*heuristic(i, j-1, finish_x, finish_y))))
         # pq[(i, j-1)] = distances[i, j-1] + heuristic(i, j-1, finish_x, finish_y)
         if visited_nodes[i, j-1] == false
             visited_nodes[i, j-1] = true
@@ -33,7 +35,9 @@ function update_distances_astar(distances::Matrix{Int64}, uncovered_nodes::Matri
         # Update distance
         distances[i-1, j] = distances[i, j] + graph[i-1, j]
     
-        push!(pq, (i-1, j) => distances[i-1, j] + 1.2*heuristic(i-1, j, finish_x, finish_y))
+        # push!(pq, (i-1, j) => distances[i-1, j] + weight*heuristic(i-1, j, finish_x, finish_y))
+        # XDP
+        push!(pq, (i-1, j) => (1/(2*weight))*(distances[i-1, j] + (2*weight - 1)*heuristic(i-1, j, finish_x, finish_y) + sqrt((distances[i-1, j] - heuristic(i-1, j, finish_x, finish_y))^2 + 4*distances[i-1, j]*heuristic(i-1, j, finish_x, finish_y))))
         # pq[(i-1, j)] = distances[i-1, j] + heuristic(i-1, j, finish_x, finish_y)
         if visited_nodes[i-1, j] == false
             visited_nodes[i-1, j] = true
@@ -46,7 +50,9 @@ function update_distances_astar(distances::Matrix{Int64}, uncovered_nodes::Matri
         parents[i, j+1] = (i, j)
         distances[i, j+1] = distances[i, j] + graph[i, j+1]
 
-        push!(pq, (i, j+1) => distances[i, j+1] + 1.2*heuristic(i, j+1, finish_x, finish_y))
+        # push!(pq, (i, j+1) => distances[i, j+1] + weight*heuristic(i, j+1, finish_x, finish_y))
+        # XDP
+        push!(pq, (i, j+1) => (1/(2*weight))*(distances[i, j+1] + (2*weight - 1)*heuristic(i, j+1, finish_x, finish_y) + sqrt((distances[i, j+1] - heuristic(i, j+1, finish_x, finish_y))^2 + 4*distances[i, j+1]*heuristic(i, j+1, finish_x, finish_y))))
         # pq[(i, j+1)] = distances[i, j+1] + heuristic(i, j+1, finish_x, finish_y)
         if visited_nodes[i, j+1] == false
             visited_nodes[i, j+1] = true
@@ -59,7 +65,10 @@ function update_distances_astar(distances::Matrix{Int64}, uncovered_nodes::Matri
         parents[i+1, j] = (i, j)
         distances[i+1, j] = distances[i, j] + graph[i+1, j]
 
-        push!(pq, (i+1, j) => distances[i+1, j] + 1.2*heuristic(i+1, j, finish_x, finish_y))
+        # push!(pq, (i+1, j) => distances[i+1, j] + weight*heuristic(i+1, j, finish_x, finish_y))
+        # XDP
+        push!(pq, (i+1, j) => (1/(2*weight))*(distances[i+1, j] + (2*weight - 1)*heuristic(i+1, j, finish_x, finish_y) + sqrt((distances[i+1, j] - heuristic(i+1, j, finish_x, finish_y))^2 + 4*distances[i+1, j]*heuristic(i+1, j, finish_x, finish_y))))
+
         # pq[(i+1, j)] = distances[i+1, j] + heuristic(i+1, j, finish_x, finish_y)
         if visited_nodes[i+1, j] == false
             visited_nodes[i+1, j] = true
@@ -90,7 +99,7 @@ end
 #     return distances
 # end
 
-function astar(graph::Matrix{Int64}, start_x::Int64, start_y::Int64, finish_x::Int64, finish_y::Int64)
+function WastarXDP(weight::Float64, graph::Matrix{Int64}, start_x::Int64, start_y::Int64, finish_x::Int64, finish_y::Int64)
     # Number of visited states
     node_count::Int64 = 1
 
@@ -113,15 +122,20 @@ function astar(graph::Matrix{Int64}, start_x::Int64, start_y::Int64, finish_x::I
     
     pq::PriorityQueue{Tuple{Int64, Int64}, Float64} = PriorityQueue()
     enqueue!(pq, (start_x, start_y), 0)
+
+    # rand_w::Float64 = rand(1:15)
+    # start_w = 1.0
+    # h_fin = heuristic(start_x, start_y, finish_x, finish_y)
     # Until the path to the finish hasn't been found or if there are no more visitable nodes, we iterate
     while uncovered_nodes[finish_x, finish_y] == false || min_x == -1 || min_y == -1
         # Getting the index of the unvisited and closest node to the starting point
         min_x, min_y = dequeue!(pq)
 
         # Update the distances of the pixels around the pixel at index (min_x, min_y) 
-        node_count = update_distances_astar(distances, uncovered_nodes, graph, min_x, min_y, finish_x, finish_y, parents, pq, node_count, visited_nodes)
-        # node_count = update_distances_astar(distances, uncovered_nodes, graph, min_x, min_y, finish_x, finish_y, parents, pq, node_count)
-
+        node_count = update_distances_Wastar(weight, distances, uncovered_nodes, graph, min_x, min_y, finish_x, finish_y, parents, pq, node_count, visited_nodes)
+        # node_count = update_distances_Wastar(distances, uncovered_nodes, graph, min_x, min_y, finish_x, finish_y, parents, pq, node_count)
+        # rand_w = rand(1:15)
+        # start_w += 0.1
         # marking the node we just worked around as visited
         uncovered_nodes[min_x, min_y] = true
     end
